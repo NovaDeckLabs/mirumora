@@ -1,6 +1,35 @@
+# OS / tooling
 .DS_Store
-.playwright-mcp/
 *.log
-assets/Phewsh_Field_Guide_26.pdf
-assets/concept.png
+.playwright-mcp/
+
+# internal working files — not part of the published site
+new-assets/
+archive/
+markdown/
+dependancies/
+white-black-grainy-noise-stipple-texture-background/
+white-black-grainy-noise-stipple-texture-background.zip
+*.pdf
+HANDOFF.md
+.intent/
+.claude/
+.cursorrules
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+# legacy Nova Deck Labs assets superseded by the Mirumora rebrand
+assets/NDL.png
+assets/NDL.svg
+assets/NDL-Hover.png
+assets/NDL-Hover.svg
+assets/grain1.png
+assets/wildcard.png
+assets/wildcard 3.png
+assets/concepts/
 assets/Positioning.png
+assets/concept.png
+local.sh
+ship.sh
+new-index*.html

@@ -1,95 +1,1267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mirumora Studio</title>
-  <meta name="description" content="Mirumora Studio — quiet craft for considered brands." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mirumora — Quiet craft for considered brands.</title>
+<meta name="description" content="Mirumora Studio — quiet craft for considered brands.">
+<meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3efe8" media="(prefers-color-scheme: light)">
+<link rel="icon" href="assets/Logo.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://novadecklabs.github.io/mirumora/">
+<meta property="og:title" content="Mirumora Studio">
+<meta property="og:description" content="Quiet craft for considered brands.">
+<meta property="og:image" content="https://novadecklabs.github.io/mirumora/assets/share.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mirumora Studio">
+<meta name="twitter:description" content="Quiet craft for considered brands.">
+<meta name="twitter:image" content="https://novadecklabs.github.io/mirumora/assets/share.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
-  <link rel="icon" type="image/svg+xml" href="assets/Logo.svg" />
+<style>
+:root{
+  color-scheme: dark light;
+  --ink:        #141413;
+  --bone:       #f3efe8;
+  --bone-dim:   #b6b0a3;
+  --muted:      #7a766c;
+  --line:       #2c2925;
+  --line-warm:  #5a554c;
+  --vignette:   radial-gradient(120% 90% at 50% 30%, transparent 0%, rgba(0,0,0,0.62) 100%);
+  --grain-opacity: 0.38;
+  --cursor-line: rgba(243,239,232,0.95);
+  --cta-line: rgba(243,239,232,0.90);
+  --cta-fill: rgba(243,239,232,0.10);
+  --lede: rgba(243,239,232,0.92);
+  --lede-shadow: 0 2px 18px rgba(20,20,19,0.88);
+  --card-lightness: 78%;
+  --card-hot-lightness: 85%;
+  --card-fill-a: rgba(20,20,19,0.58);
+  --card-fill-b: rgba(20,20,19,0.90);
+  --card-shadow: rgba(0,0,0,0.90);
+  --card-inset: rgba(255,255,255,0.08);
+  --logo-filter: invert(1) brightness(1.05);
+  --water-blend: screen;
+}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300&family=Playfair+Display:wght@500&display=swap"
-    rel="stylesheet"
-  />
+@media (prefers-color-scheme: light){
+  :root{
+    --ink:        #f3efe8;
+    --bone:       #141413;
+    --bone-dim:   #4f4b44;
+    --muted:      #756f65;
+    --line:       #cec7ba;
+    --line-warm:  #a59d90;
+    --vignette:   radial-gradient(120% 90% at 50% 28%, rgba(255,255,255,0.56) 0%, transparent 48%, rgba(70,61,48,0.12) 100%);
+    --grain-opacity: 0.20;
+    --cursor-line: rgba(20,20,19,0.90);
+    --cta-line: rgba(20,20,19,0.78);
+    --cta-fill: rgba(20,20,19,0.07);
+    --lede: rgba(20,20,19,0.80);
+    --lede-shadow: 0 2px 18px rgba(236,232,223,0.94);
+    --card-lightness: 39%;
+    --card-hot-lightness: 28%;
+    --card-fill-a: rgba(255,255,255,0.54);
+    --card-fill-b: rgba(220,214,202,0.88);
+    --card-shadow: rgba(70,61,48,0.22);
+    --card-inset: rgba(255,255,255,0.62);
+    --logo-filter: none;
+    --water-blend: multiply;
+  }
+}
 
-  <style>
-    :root {
-      --cream: #f3efe8;
-      --ink: #141413;
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+html{height:100%;overflow:hidden}
+body{
+  height: 100dvh;
+  background: var(--ink);
+  color: var(--bone);
+  font: 15px/1.55 "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+/* stipple grain — fine CRT-static, near-uniform with a hint of bottom weight */
+body::before{
+  content:"";
+  position: fixed; inset: 0;
+  background-image: var(--grain, none);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: var(--grain-opacity);
+  pointer-events: none;
+  z-index: 2;
+}
+body::after{
+  content:"";
+  position: fixed; inset: 0;
+  background: var(--vignette);
+  pointer-events: none;
+  z-index: 1;
+}
 
-    html,
-    body {
-      height: 100%;
-    }
+/* cursor:none ONLY when JS confirms custom cursor is running */
+body.has-custom-cursor,
+body.has-custom-cursor *{ cursor: none !important; }
 
-    body {
-      background-color: var(--cream);
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
+/* ── Custom cursor ───────────────────────── */
+.cursor{
+  position: fixed;
+  left: 0; top: 0;
+  width: 16px; height: 22px;
+  border: 1px solid var(--cursor-line);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity .22s ease,
+              width .22s cubic-bezier(.2,.8,.2,1),
+              height .22s cubic-bezier(.2,.8,.2,1);
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+.cursor.is-down{ width: 12px; height: 16px; }
+.cursor.is-cta{ opacity: 0; }
 
-    .brand {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+/* ── CTA outline ────────────────────────── */
+@property --sweep-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+[data-cta]{
+  position: relative;
+  display: inline-block;
+}
+[data-cta]::before{
+  content:"";
+  position: absolute;
+  inset: -8px -14px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  pointer-events: none;
+  background-color: transparent;
+  transition: border-color .25s ease,
+              inset .35s cubic-bezier(.2,.8,.2,1),
+              background-color .18s ease-out;
+}
+[data-cta]:hover::before,
+[data-cta].is-focus::before{
+  border-color: var(--cta-line);
+  inset: -13px -22px;
+}
+/* click flash — brief inner fill on press */
+[data-cta]:active::before{
+  background-color: var(--cta-fill);
+  transition: background-color .08s ease-out,
+              border-color .25s ease,
+              inset .35s cubic-bezier(.2,.8,.2,1);
+}
+/* traveling color sweep around the outline */
+[data-cta]::after{
+  content:"";
+  position: absolute;
+  inset: -8px -14px;
+  border-radius: 4px;
+  padding: 1.4px;
+  background: conic-gradient(from var(--sweep-angle),
+    transparent 0%,
+    hsla(15, 70%, 75%, 0.95) 5%,
+    hsla(45, 65%, 78%, 0.95) 10%,
+    hsla(120, 50%, 75%, 0.95) 16%,
+    hsla(190, 55%, 75%, 0.95) 22%,
+    hsla(260, 50%, 78%, 0.95) 28%,
+    hsla(320, 55%, 78%, 0.95) 34%,
+    transparent 42%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .35s ease,
+              inset .35s cubic-bezier(.2,.8,.2,1);
+  pointer-events: none;
+}
+[data-cta]:hover::after,
+[data-cta].is-focus::after{
+  opacity: 1;
+  inset: -13px -22px;
+  animation: cta-sweep 2.2s linear infinite;
+}
+[data-cta].is-launching::after{
+  opacity: 1;
+  inset: -13px -22px;
+  animation: cta-sweep 0.55s linear infinite;
+}
+[data-cta].is-launching .ch{
+  transition-duration: 0.18s !important;
+  transition-delay: calc(var(--i, 0) * 14ms) !important;
+}
+@keyframes cta-sweep {
+  to { --sweep-angle: 360deg; }
+}
 
-    .brand__mark {
-      width: auto;
-      height: clamp(140px, 22vh, 240px);
-      margin-bottom: 2.5rem;
-    }
+/* ── Per-letter color wash ────────────── */
+.split .ch{
+  display: inline-block;
+  color: inherit;
+  transition: color .34s ease, text-shadow .34s ease;
+  transition-delay: calc(var(--i, 0) * 24ms);
+}
+.split .ch.sp{ width: 0.28em; }
+.split:hover .ch,
+.split.is-focus .ch,
+[data-cta]:hover .split .ch,
+[data-cta].is-focus .split .ch{
+  color: hsl(calc(15 + var(--i, 0) * 28), 55%, 78%);
+  text-shadow: 0 0 10px hsla(calc(15 + var(--i, 0) * 28), 60%, 70%, 0.35);
+}
 
-    .brand__name {
-      font-family: "Playfair Display", Georgia, serif;
-      font-weight: 500;
-      font-size: clamp(2.75rem, 9vw, 5.25rem);
-      line-height: 1;
-      letter-spacing: 0.01em;
-    }
+/* ── App layout ─────────────────────────── */
+.app{
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-    .brand__studio {
-      font-family: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
-      font-weight: 300;
-      font-size: clamp(0.9rem, 2.6vw, 1.35rem);
-      letter-spacing: 0.42em;
-      text-indent: 0.42em;
-      margin-top: 1rem;
-    }
+/* top-left logo */
+.logo{
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  width: 18px;
+  height: 49px;
+  background: url('assets/Logo.svg') no-repeat center / contain;
+  z-index: 5;
+  opacity: 0.85;
+  transition: opacity .25s ease;
+  filter: var(--logo-filter);
+}
+.logo:hover{
+  opacity: 1;
+}
 
-    .brand__tagline {
-      font-family: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
-      font-weight: 300;
-      font-size: clamp(0.85rem, 2vw, 1.05rem);
-      letter-spacing: 0.04em;
-      margin-top: 3rem;
-      opacity: 0.7;
-    }
-  </style>
+/* top-right menu */
+.menu{
+  position: absolute;
+  top: 26px;
+  right: 32px;
+  z-index: 6;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.menu-toggle{
+  background: transparent;
+  border: 0;
+  color: var(--bone-dim);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  padding: 4px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.menu-toggle .arrow{
+  display: inline-block;
+  transition: transform .25s ease;
+}
+.menu.is-open .menu-toggle{ color: var(--bone); }
+.menu.is-open .menu-toggle .arrow{ transform: rotate(90deg); }
+.menu-panel{
+  position: absolute;
+  top: 36px;
+  right: 0;
+  min-width: 200px;
+  padding: 16px 4px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.menu.is-open .menu-panel{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.menu-panel a{
+  color: var(--bone);
+  text-decoration: none;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 4px 0;
+}
+.menu-panel .menu-sep{
+  width: 80px;
+  height: 1px;
+  background: var(--line);
+  margin: 10px 0 6px;
+  align-self: flex-end;
+}
+.menu-panel .menu-meta{
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--muted);
+  padding: 2px 0;
+}
+.menu-panel a.menu-meta{
+  color: var(--muted);
+  text-decoration: none;
+  text-transform: none;
+}
+
+/* ── Hero ────────────────────────────────── */
+.hero{
+  text-align: center;
+  max-width: 760px;
+  padding: 0 32px;
+  margin-top: -8vh;
+  z-index: 4;
+  position: relative;
+  pointer-events: none;
+}
+.hero h1{
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 1.0;
+  letter-spacing: 0.005em;
+}
+.hero .studio{
+  margin-top: clamp(10px, 1.4vh, 16px);
+  font-family: "Hanken Grotesk", -apple-system, sans-serif;
+  font-weight: 300;
+  font-size: clamp(13px, 1.2vw, 18px);
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--bone-dim);
+}
+.hero .lede{
+  margin-top: clamp(24px, 3.4vh, 34px);
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(19px, 1.65vw, 22px);
+  line-height: 1.38;
+  color: var(--lede);
+  max-width: 34ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: var(--lede-shadow);
+}
+
+/* ── Wheel ───────────────────────────────── */
+.water-plane{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2vh;
+  width: 100%;
+  height: 70vh;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.94;
+  mix-blend-mode: var(--water-blend);
+}
+.wheel-stage{
+  position: absolute;
+  bottom: -22vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1200px, 140vw);
+  height: 90vh;
+  perspective: 1500px;
+  perspective-origin: 50% 38%;
+  z-index: 2;
+}
+.wheel{
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 0; height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-14deg) rotateY(var(--spin, 0deg));
+  /* no default transition — frame-by-frame --spin updates must apply instantly */
+}
+.wheel.gather-transition{
+  transition: transform 0.55s cubic-bezier(.25,.8,.25,1);
+}
+.wheel.gathered{
+  transform: rotateX(0deg) rotateY(0deg);
+}
+.wheel-card{
+  --hue: calc(15 + var(--i, 0) * 16);
+  position: absolute;
+  width: 50px;
+  height: 72px;
+  left: -25px;
+  top: -36px;
+  border: 1px solid hsla(var(--hue), 55%, var(--card-lightness), var(--a, 0.4));
+  border-radius: 4px;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(var(--i) * (360deg / var(--n)))) translateZ(var(--R, 320px));
+  backface-visibility: visible;
+  transition: border-color .25s ease;
+  will-change: transform, border-color;
+}
+.wheel.gather-transition .wheel-card{
+  transition: transform 0.55s cubic-bezier(.25,.8,.25,1),
+              border-color .25s ease;
+}
+.wheel-card::after{
+  content:"";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid hsla(var(--hue), 55%, var(--card-lightness), calc(var(--a, 0.4) * 0.25));
+  border-radius: 2px;
+  transition: border-color .25s ease;
+  pointer-events: none;
+}
+.wheel-card::before{
+  content: attr(data-secret);
+  position: absolute;
+  inset: 8px 5px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 6px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsla(var(--hue), 60%, var(--card-hot-lightness), 0.88);
+  opacity: var(--reveal, 0);
+  transition: opacity .24s ease;
+  text-shadow: 0 1px 5px var(--ink);
+  pointer-events: none;
+}
+.wheel-card.hot{
+  border-color: hsl(var(--hue), 70%, var(--card-hot-lightness)) !important;
+}
+.wheel-card.hot::after{
+  border-color: hsla(var(--hue), 60%, 80%, 0.45) !important;
+}
+
+/* gathered: each card translated to cursor + fanned + slight stack thickness */
+.wheel.gathered .wheel-card{
+  background:
+    linear-gradient(145deg,
+      hsla(var(--hue), 52%, 76%, 0.10),
+      var(--card-fill-a) 48%,
+      var(--card-fill-b));
+  box-shadow:
+    0 12px 24px -16px var(--card-shadow),
+    0 0 18px -10px hsla(var(--hue), 70%, 76%, 0.8),
+    inset 0 1px 0 var(--card-inset);
+}
+.wheel.gathered.is-submerged .wheel-card{
+  border-color: hsla(var(--hue), 64%, var(--card-hot-lightness), calc(var(--a, 0.4) * 0.92));
+  box-shadow:
+    0 14px 26px -17px var(--card-shadow),
+    0 0 20px -9px hsla(188, 55%, 68%, 0.34),
+    inset 0 -18px 28px -22px hsla(188, 55%, 72%, 0.42),
+    inset 0 1px 0 var(--card-inset);
+}
+.wheel:not(.gathered) .wheel-card{
+  background: linear-gradient(
+    to bottom,
+    transparent 58%,
+    hsla(192, 52%, 64%, 0.05) 72%,
+    hsla(195, 60%, 72%, 0.16) 86%,
+    hsla(198, 72%, 80%, 0.32) 100%
+  );
+}
+/* once gather animation has played, switch to snappy follow */
+.wheel.gathered.tracking .wheel-card{
+  transition: transform 0.16s cubic-bezier(.2,.8,.2,1);
+}
+
+/* bottom anchors */
+.anchor{
+  position: absolute;
+  bottom: 24px;
+  z-index: 5;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  pointer-events: none;
+}
+.anchor-bl{ left: 32px; }
+.anchor-br{
+  right: 32px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+@media (max-width: 600px){
+  .logo{ top: 20px; left: 22px; width: 14px; height: 38px; }
+  .menu{ top: 22px; right: 22px; }
+  .anchor{ bottom: 20px; font-size: 9px; }
+  .anchor-bl{ left: 22px; letter-spacing: 0.24em; }
+  .anchor-br{ right: 22px; font-size: 13px; }
+  .hero{ padding: 0 22px; margin-top: -4vh; }
+  .hero .lede{ font-size: 18px; max-width: 27ch; }
+  .menu-panel{ min-width: 170px; }
+  .menu-panel a, .menu-panel .soon{ font-size: 20px; }
+  .wheel-stage{ width: 210vw; bottom: -18vh; }
+  .water-plane{ height: 62vh; opacity: 0.72; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .cursor{ display: none; }
+  .water-plane{ opacity: 0.42; }
+  .wheel{ transform: rotateX(-14deg); }
+  .wheel-card{ transition: none; }
+}
+</style>
 </head>
 <body>
-  <main class="brand">
-    <img class="brand__mark" src="assets/Logo.svg" alt="Mirumora Studio mark" />
-    <h1 class="brand__name">Mirumora</h1>
-    <p class="brand__studio">STUDIO</p>
-    <p class="brand__tagline">Quiet craft for considered brands.</p>
+
+<div class="cursor" id="cursor"></div>
+
+<div class="app">
+
+  <a class="logo" href="./" aria-label="Mirumora home" data-cta></a>
+
+  <nav class="menu" id="menu">
+    <button class="menu-toggle" data-cta data-menu-toggle aria-expanded="false">
+      Menu <span class="arrow">›</span>
+    </button>
+    <div class="menu-panel" role="menu">
+      <a href="products/" data-cta data-split>Products</a>
+      <a href="agents/" data-cta data-split>For Agents</a>
+      <a href="about/" data-cta data-split>About</a>
+      <div class="menu-sep"></div>
+      <span class="menu-meta">@mirumora</span>
+      <a href="mailto:hello@mirumora.studio" data-cta class="menu-meta">hello@mirumora.studio</a>
+    </div>
+  </nav>
+
+  <canvas class="water-plane" id="waterPlane" aria-hidden="true"></canvas>
+
+  <div class="wheel-stage" id="wheelStage" aria-hidden="true">
+    <div class="wheel" id="wheel"></div>
+  </div>
+
+  <main class="hero">
+    <h1 data-split>Mirumora</h1>
+    <p class="studio">STUDIO</p>
+    <p class="lede">Quiet craft for considered brands.</p>
   </main>
+
+  <div class="anchor anchor-bl">Mirumora</div>
+  <div class="anchor anchor-br">@mirumora</div>
+
+</div>
+
+<script>
+(function(){
+  const themeMedia = matchMedia('(prefers-color-scheme: light)');
+
+  /* ───── Stipple grain — fine CRT static, dense but soft ───── */
+  function ensureGrain(){
+    const light = themeMedia.matches;
+    const KEY = light ? 'mir-grain-v1-light' : 'mir-grain-v1-dark';
+    let url = null;
+    try { url = localStorage.getItem(KEY); } catch(e){}
+    if (!url){
+      const W = 1200, H = 900;
+      const c = document.createElement('canvas');
+      c.width = W; c.height = H;
+      const ctx = c.getContext('2d');
+      for (let y = 0; y < H; y++){
+        const yn = y / H;
+        // dense uniform static (~5%) with subtle bottom weight (+2%)
+        const density = 0.055 + Math.pow(yn, 2.2) * 0.022;
+        for (let x = 0; x < W; x++){
+          if (Math.random() < density){
+            const a = 0.18 + Math.random() * 0.22;   // soft per-particle alpha
+            const grain = light ? '20, 20, 19' : '243, 239, 232';
+            ctx.fillStyle = `rgba(${grain}, ${a.toFixed(3)})`;
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+      }
+      url = c.toDataURL('image/png');
+      try { localStorage.setItem(KEY, url); } catch(e){}
+    }
+    document.body.style.setProperty('--grain', `url("${url}")`);
+  }
+  ensureGrain();
+  themeMedia.addEventListener('change', ensureGrain);
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Robust detection: only show custom cursor on devices with a primary mouse-like pointer
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const canCustomCursor =
+    finePointer && !reduced;
+
+  /* ───── Cursor ───── */
+  const cursor = document.getElementById('cursor');
+  let cx = innerWidth / 2, cy = innerHeight / 2;
+  let tx = cx, ty = cy;
+  let cursorX = cx, cursorY = cy;
+  let mouseMoved = false;
+
+  function onMouseMove(e){
+    tx = e.clientX; ty = e.clientY;
+    cursorX = e.clientX; cursorY = e.clientY;
+    mouseMoved = true;
+    checkGather();
+  }
+
+  if (canCustomCursor){
+    try {
+      document.body.classList.add('has-custom-cursor');
+      addEventListener('mousemove', onMouseMove, { passive: true });
+      addEventListener('mousedown', () => cursor.classList.add('is-down'));
+      addEventListener('mouseup', () => cursor.classList.remove('is-down'));
+      (function tick(){
+        cx += (tx - cx) * 0.30;
+        cy += (ty - cy) * 0.30;
+        cursor.style.transform =
+          `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
+        requestAnimationFrame(tick);
+      })();
+    } catch (err){
+      document.body.classList.remove('has-custom-cursor');
+      cursor.style.display = 'none';
+    }
+  } else {
+    cursor.style.display = 'none';
+    // still track for gather mode (touch devices use touchmove handler below)
+    addEventListener('mousemove', onMouseMove, { passive: true });
+  }
+
+  /* CTA hover */
+  document.querySelectorAll('[data-cta]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('is-cta');
+      el.classList.add('is-focus');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('is-cta');
+      el.classList.remove('is-focus');
+    });
+  });
+
+  /* Per-letter splitter — preserves nested tags (e.g. <em>) */
+  function splitElement(el){
+    if (el.classList.contains('split')) return;
+    let i = 0;
+    function walk(node){
+      if (node.nodeType === 3){
+        const text = node.textContent;
+        const frag = document.createDocumentFragment();
+        for (const ch of text){
+          const span = document.createElement('span');
+          if (ch === ' '){
+            span.className = 'ch sp';
+          } else {
+            span.className = 'ch';
+            span.textContent = ch;
+          }
+          span.style.setProperty('--i', i++);
+          frag.appendChild(span);
+        }
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE'){
+        [...node.childNodes].forEach(walk);
+      }
+    }
+    walk(el);
+    el.classList.add('split');
+  }
+  document.querySelectorAll('[data-split]').forEach(splitElement);
+
+  /* Click intercept — let the color animation play before navigation */
+  document.querySelectorAll('a[data-cta]').forEach(el => {
+    el.addEventListener('click', e => {
+      const href = el.getAttribute('href');
+      if (!href || href === '#' || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (e.button !== 0) return;
+      if (el.classList.contains('is-launching')) return;
+      e.preventDefault();
+      el.classList.add('is-launching', 'is-focus');
+      const target = el.getAttribute('target');
+      setTimeout(() => {
+        if (target === '_blank'){
+          window.open(href, '_blank', 'noopener,noreferrer');
+          el.classList.remove('is-launching');
+        } else {
+          window.location.href = href;
+        }
+      }, 750);
+    });
+  });
+
+  /* ───── Menu ───── */
+  const menu = document.getElementById('menu');
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  menuToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = menu.classList.toggle('is-open');
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', e => {
+    if (!menu.contains(e.target)){
+      menu.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape'){
+      menu.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* ───── Wheel ───── */
+  const wheelEl = document.getElementById('wheel');
+  const stage = document.getElementById('wheelStage');
+  const water = document.getElementById('waterPlane');
+  const waterCtx = water.getContext('2d');
+  const N = 24;
+  const STEP = 360 / N;
+  const SECRETS = [
+    'form', 'type', 'space', 'light', 'tone', 'rhythm',
+    'detail', 'balance', 'restraint', 'texture', 'colour', 'contrast',
+    'scale', 'weight', 'grid', 'margin', 'line', 'motion',
+    'clarity', 'craft', 'edit', 'refine', 'compose', 'consider'
+  ];
+  let R = computeR();
+
+  function computeR(){
+    return Math.min(360, Math.max(220, innerWidth * 0.27));
+  }
+
+  const cards = [];
+  for (let i = 0; i < N; i++){
+    const c = document.createElement('div');
+    c.className = 'wheel-card';
+    c.style.setProperty('--i', i);    // needed for per-card hue
+    c.style.setProperty('--a', 0.4);
+    c.style.setProperty('--reveal', 0);
+    c.dataset.secret = SECRETS[i % SECRETS.length];
+    wheelEl.appendChild(c);
+    cards.push(c);
+  }
+  cards.forEach(c => {
+    c.addEventListener('mouseenter', () => c.classList.add('hot'));
+    c.addEventListener('mouseleave', () => c.classList.remove('hot'));
+  });
+
+  // Place cards in ring formation (called once + when R changes + on gather exit)
+  function placeCardsInRing(){
+    for (let i = 0; i < N; i++){
+      cards[i].style.transform = `rotateY(${i * STEP}deg) translateZ(${R}px)`;
+    }
+  }
+  function setCardsToStack(mx, my){
+    const mid = (N - 1) / 2;
+    for (let i = 0; i < N; i++){
+      const offset = i - mid;
+      const edge = Math.abs(offset) / mid;
+      const fan = offset * 2.8;
+      const sx = offset * 0.72;
+      const sy = -Math.pow(edge, 1.45) * 13 + Math.sin(i * 1.7) * 1.5;
+      const depth = (mid - Math.abs(offset)) * 0.9;
+      const tiltX = Math.sin(i * 0.9) * 2.2;
+      const tiltY = offset * -0.22;
+      cards[i].style.transform =
+        `translate3d(${mx + sx}px, ${my + sy}px, ${depth}px) rotateZ(${fan}deg) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+    }
+  }
+
+  placeCardsInRing();
+
+  let spin = 0;
+  let dragVel = 0;
+  let dragging = false;
+  let lastX = 0;
+  let lastT = 0;
+  const IDLE_VEL = 0.12;
+  const DECAY = 0.962;
+
+  let waterWidth = 0;
+  let waterHeight = 0;
+  let waterDpr = 1;
+  const ripples = [];
+  const droplets = [];
+  let wasSubmerged = false;
+  let wetDepth = 0;
+  let lastGatherX = cursorX;
+  let lastGatherY = cursorY;
+  let lastWaterTime = performance.now();
+  let lastWakeTime = 0;
+
+  /* 1D wave field — height/velocity along X at the contact zone.
+     Cards inject impulses as they sweep across the front of the wheel.
+     Real wave equation: a' = (h[i-1]+h[i+1]-2h[i])*k, damped. */
+  const WAVE_RES = 192;
+  const waveHeights = new Float32Array(WAVE_RES);
+  const waveVels = new Float32Array(WAVE_RES);
+  const cardLastX = new Float32Array(N);
+  cardLastX.fill(-9999);
+
+  function injectWaveAt(xPx, force){
+    if (!waterWidth) return;
+    const idx = Math.round((xPx / waterWidth) * (WAVE_RES - 1));
+    if (idx < 1 || idx >= WAVE_RES - 1) return;
+    // Soft impulse spreads to neighbors so it doesn't look pixelated
+    waveVels[idx]     += force;
+    waveVels[idx - 1] += force * 0.55;
+    waveVels[idx + 1] += force * 0.55;
+  }
+
+  function stepWaveField(dt){
+    const k = 0.42;         // wave-speed constant
+    const damping = 0.984;  // bleed energy each step
+    for (let i = 1; i < WAVE_RES - 1; i++){
+      const accel = (waveHeights[i - 1] + waveHeights[i + 1] - 2 * waveHeights[i]) * k;
+      waveVels[i] = (waveVels[i] + accel * dt) * damping;
+    }
+    // Reflect/absorb at edges
+    waveVels[0] *= 0.7; waveVels[WAVE_RES - 1] *= 0.7;
+    for (let i = 0; i < WAVE_RES; i++){
+      waveHeights[i] += waveVels[i] * dt;
+    }
+  }
+
+  function sampleWave(xPx){
+    if (!waterWidth) return 0;
+    const idxF = (xPx / waterWidth) * (WAVE_RES - 1);
+    const i0 = Math.floor(idxF);
+    if (i0 < 0 || i0 >= WAVE_RES - 1) return 0;
+    const t = idxF - i0;
+    return waveHeights[i0] * (1 - t) + waveHeights[i0 + 1] * t;
+  }
+
+  function addRipple(x, y, strength = 1, radius = 8){
+    ripples.push({ x, y, strength, radius, life: 1 });
+    if (ripples.length > 42) ripples.shift();
+  }
+
+  function addDrips(x, y, amount){
+    const count = Math.min(10, Math.max(3, Math.round(amount * 8)));
+    for (let i = 0; i < count; i++){
+      droplets.push({
+        x: x + (Math.random() - 0.5) * 44,
+        y: y + Math.random() * 10,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: 0.18 + Math.random() * 0.24,
+        length: 2 + Math.random() * 4,
+        life: 1
+      });
+    }
+  }
+
+  function resizeWater(){
+    const rect = water.getBoundingClientRect();
+    waterDpr = Math.min(devicePixelRatio || 1, 2);
+    waterWidth = Math.max(1, rect.width);
+    waterHeight = Math.max(1, rect.height);
+    water.width = Math.round(waterWidth * waterDpr);
+    water.height = Math.round(waterHeight * waterDpr);
+    waterCtx.setTransform(waterDpr, 0, 0, waterDpr, 0, 0);
+  }
+
+  function drawWater(time){
+    waterCtx.clearRect(0, 0, waterWidth, waterHeight);
+    if (!waterWidth || !waterHeight) return;
+
+    const light = themeMedia.matches;
+    const phase = time * 0.00045;
+    const speed = Math.min(1, Math.abs(dragVel) * 0.16 + IDLE_VEL * 2.4);
+    const dt = Math.min(32, time - lastWaterTime);
+    const waterRect = water.getBoundingClientRect();
+    const wheelRect = wheelEl.getBoundingClientRect();
+    const centerX = wheelRect.left - waterRect.left;
+    const axisY = wheelRect.top - waterRect.top;
+    const surfaceY = axisY + (innerWidth <= 600 ? 28 : 31);
+    const waterRgb = light ? '55, 112, 122' : '173, 211, 214';
+    const brightRgb = light ? '34, 92, 104' : '205, 229, 228';
+    const deepRgb = light ? '82, 132, 140' : '106, 164, 177';
+
+    const projectedRadius = Math.min(waterWidth * 0.31, R * 1.15);
+    const direction = dragVel < -0.01 ? -1 : 1;
+
+    if (!gatherMode){
+      // ── Per-card physics: inject wave impulses from card motion through water ──
+      for (let i = 0; i < N; i++){
+        const angle = (i * STEP + spin) * Math.PI / 180;
+        const depth = Math.cos(angle);
+        const cardX = centerX + Math.sin(angle) * projectedRadius;
+
+        // Always-on barely-dipped reveal — front cards show their label more
+        const baseReveal = 0.07 + Math.max(0, depth) * 0.22;
+        cards[i].style.setProperty('--reveal', baseReveal.toFixed(3));
+
+        // Inject impulse where the card meets the water — front cards have more force
+        if (depth > -0.15){
+          const lastX = cardLastX[i];
+          const dx = lastX > -9000 ? cardX - lastX : 0;
+          const intensity = (Math.max(0, depth) + 0.18) * (Math.abs(dx) * 0.04 + IDLE_VEL * 0.6 + speed * 0.45);
+          if (intensity > 0.0008) injectWaveAt(cardX, -intensity * 0.55);
+        }
+        cardLastX[i] = cardX;
+      }
+
+      // Step the wave equation forward
+      const waveDt = Math.min(2, dt * 0.32);
+      stepWaveField(waveDt);
+
+      // ── Per-card render: curved wakes following the angular path ──
+      for (let i = 0; i < N; i++){
+        const angle = (i * STEP + spin) * Math.PI / 180;
+        const depth = Math.cos(angle);
+        if (depth < -0.45) continue;     // skip cards on the far back of the wheel
+
+        const visibility = 0.18 + Math.max(0, depth) * 0.82;
+        const cardX = centerX + Math.sin(angle) * projectedRadius;
+        const waveBob = sampleWave(cardX) * 4.5;
+        const contactY = surfaceY + depth * projectedRadius * 0.055 + waveBob;
+        const wakeAlpha = visibility * (light ? 0.16 : 0.22);
+        const contactRadius = 6 + visibility * 4.5;
+        if (!isFinite(cardX) || !isFinite(contactY) || contactRadius <= 0) continue;
+
+        // Contact ellipse — where card bottom meets the water (bobs with the wave)
+        const contactGlow = waterCtx.createRadialGradient(
+          cardX, contactY, 0, cardX, contactY, contactRadius * 2.4);
+        contactGlow.addColorStop(0, `rgba(${brightRgb}, ${wakeAlpha * 0.38})`);
+        contactGlow.addColorStop(1, `rgba(${deepRgb}, 0)`);
+        waterCtx.fillStyle = contactGlow;
+        waterCtx.beginPath();
+        waterCtx.ellipse(cardX, contactY + 1, contactRadius * 2.4, contactRadius * 0.7, 0, 0, Math.PI * 2);
+        waterCtx.fill();
+
+        // Crisp contact ring
+        waterCtx.beginPath();
+        waterCtx.ellipse(cardX, contactY, contactRadius, 1.1 + visibility, 0, 0, Math.PI * 2);
+        waterCtx.strokeStyle = `rgba(${brightRgb}, ${wakeAlpha})`;
+        waterCtx.lineWidth = 0.85;
+        waterCtx.stroke();
+
+        // CURVED wake — trace path through previous angular positions
+        // so the trail follows the rotation rather than going straight back.
+        const trailSteps = 6;
+        const trailSpan = 10 + speed * 14;  // degrees of wheel-rotation the trail covers
+        waterCtx.beginPath();
+        let started = false;
+        for (let t = 1; t <= trailSteps; t++){
+          const tNorm = t / trailSteps;
+          const trailDeg = direction * tNorm * trailSpan;
+          const trailAngle = (i * STEP + spin - trailDeg) * Math.PI / 180;
+          const trailDepth = Math.cos(trailAngle);
+          if (trailDepth < -0.35) continue;
+          const tx = centerX + Math.sin(trailAngle) * projectedRadius;
+          const tWave = sampleWave(tx) * 3.5;
+          const ty = surfaceY + trailDepth * projectedRadius * 0.055 + tWave
+                   + Math.sin(trailAngle + phase * 5) * (0.5 + tNorm * 0.7);
+          if (!started){
+            waterCtx.moveTo(tx, ty);
+            started = true;
+          } else {
+            waterCtx.lineTo(tx, ty);
+          }
+        }
+        if (started){
+          waterCtx.strokeStyle = `rgba(${waterRgb}, ${wakeAlpha * 0.95})`;
+          waterCtx.lineWidth = 0.85;
+          waterCtx.stroke();
+        }
+      }
+
+      // Quieter motor pulse — just one subtle ring, faster cards = more visible
+      const motorProgress = phase % 1;
+      const motorRadius = 24 + motorProgress * (52 + speed * 38);
+      waterCtx.beginPath();
+      waterCtx.ellipse(centerX, surfaceY, motorRadius, motorRadius * 0.16, 0, 0, Math.PI * 2);
+      waterCtx.strokeStyle = `rgba(${brightRgb}, ${(1 - motorProgress) * (0.015 + speed * 0.06)})`;
+      waterCtx.lineWidth = 0.65;
+      waterCtx.stroke();
+    } else {
+      const stackX = cursorX - waterRect.left;
+      const stackY = cursorY - waterRect.top;
+      const surfaceAtStack = surfaceY + (stackX - centerX) * 0.018;
+      const stackBottom = stackY + 37;
+      const nextWetDepth = Math.max(0, Math.min(1, (stackBottom - surfaceAtStack) / 62));
+      const velocityX = stackX - lastGatherX;
+      const velocityY = stackY - lastGatherY;
+      const movement = Math.hypot(velocityX, velocityY);
+      wetDepth += (nextWetDepth - wetDepth) * 0.22;
+
+      wheelEl.classList.toggle('is-submerged', wetDepth > 0.08);
+      cards.forEach((card, index) => {
+        const reveal = Math.max(0, Math.min(1, wetDepth * 1.65 - index * 0.018));
+        card.style.setProperty('--reveal', reveal.toFixed(3));
+      });
+
+      if (nextWetDepth > 0 && !wasSubmerged){
+        addRipple(stackX, surfaceAtStack, Math.min(1.8, 1.2 + movement * 0.03), 10);
+        injectWaveAt(stackX, -0.8 - movement * 0.04);    // plunge: big downward push
+      } else if (nextWetDepth === 0 && wasSubmerged){
+        addDrips(stackX, stackBottom - 8, wetDepth);
+        addRipple(stackX, surfaceAtStack, Math.min(1.2, 0.6 + movement * 0.02), 8);
+        injectWaveAt(stackX, 0.5 + wetDepth * 0.4);      // lift: upward bounce
+      }
+      if (nextWetDepth > 0 && movement > 2.4 && time - lastWakeTime > 55){
+        addRipple(stackX - velocityX * 0.8, surfaceAtStack, Math.min(1.4, movement * 0.06), 5);
+        injectWaveAt(stackX, -movement * 0.012);          // lateral drag: ongoing push
+        lastWakeTime = time;
+      }
+
+      // While submerged, continuously inject small impulses so water "holds" the stack
+      if (nextWetDepth > 0){
+        injectWaveAt(stackX, -wetDepth * 0.015 - movement * 0.004);
+      }
+      // Step the wave field in gather mode too so plunge/lift waves propagate
+      stepWaveField(Math.min(2, dt * 0.32));
+
+      if (wetDepth > 0.025){
+        const shimmer = waterCtx.createRadialGradient(stackX, surfaceAtStack + 8, 0, stackX, surfaceAtStack + 8, 76);
+        shimmer.addColorStop(0, `rgba(${brightRgb}, ${wetDepth * (light ? 0.085 : 0.13)})`);
+        shimmer.addColorStop(1, `rgba(${deepRgb}, 0)`);
+        waterCtx.fillStyle = shimmer;
+        waterCtx.beginPath();
+        waterCtx.ellipse(stackX, surfaceAtStack + 9, 78, 17, 0, 0, Math.PI * 2);
+        waterCtx.fill();
+
+        for (let ring = 0; ring < 3; ring++){
+          const progress = (phase * 1.8 + ring / 3) % 1;
+          const radius = 18 + progress * (38 + wetDepth * 24);
+          waterCtx.beginPath();
+          waterCtx.ellipse(stackX, surfaceAtStack, radius, radius * 0.19, 0, 0, Math.PI * 2);
+          waterCtx.strokeStyle = `rgba(${brightRgb}, ${(1 - progress) * wetDepth * (light ? 0.12 : 0.18)})`;
+          waterCtx.lineWidth = 0.75;
+          waterCtx.stroke();
+        }
+      }
+
+      wasSubmerged = nextWetDepth > 0;
+      lastGatherX = stackX;
+      lastGatherY = stackY;
+    }
+
+    lastWaterTime = time;
+    for (let i = ripples.length - 1; i >= 0; i--){
+      const ripple = ripples[i];
+      ripple.radius += dt * (0.025 + ripple.strength * 0.018);
+      ripple.life -= dt * 0.00075;
+      waterCtx.beginPath();
+      waterCtx.ellipse(ripple.x, ripple.y, ripple.radius, ripple.radius * 0.18, 0, 0, Math.PI * 2);
+      waterCtx.strokeStyle = `rgba(${brightRgb}, ${Math.min(0.12, Math.max(0, ripple.life) * 0.065 * ripple.strength)})`;
+      waterCtx.lineWidth = 0.6 + ripple.strength * 0.22;
+      waterCtx.stroke();
+      if (ripple.life <= 0) ripples.splice(i, 1);
+    }
+
+    for (let i = droplets.length - 1; i >= 0; i--){
+      const drop = droplets[i];
+      drop.x += drop.vx * dt;
+      drop.y += drop.vy * dt;
+      drop.vy += 0.0018 * dt;
+      drop.life -= dt * 0.0009;
+      const dropSurface = surfaceY + (drop.x - centerX) * 0.018;
+      if (drop.y >= dropSurface){
+        addRipple(drop.x, dropSurface, 0.32, 2);
+        droplets.splice(i, 1);
+        continue;
+      }
+      waterCtx.beginPath();
+      waterCtx.moveTo(drop.x, drop.y);
+      waterCtx.lineTo(drop.x - drop.vx * 6, drop.y - drop.length);
+      waterCtx.strokeStyle = `rgba(${brightRgb}, ${Math.max(0, drop.life) * (light ? 0.14 : 0.2)})`;
+      waterCtx.lineWidth = 0.7;
+      waterCtx.stroke();
+      if (drop.life <= 0) droplets.splice(i, 1);
+    }
+  }
+
+  /* Gather mode */
+  let gatherMode = false;
+  let gatherTimer = null;
+
+  function checkGather(){
+    if (!mouseMoved) return;   // allow even with reduced motion (user-initiated)
+    if (gatherMode && dragging) return;
+    const rect = wheelEl.getBoundingClientRect();
+    const dx = cursorX - rect.left;
+    const dy = cursorY - rect.top;
+    const dist = Math.hypot(dx, dy);
+    const gatherRadius = finePointer ? Math.min(132, R * 0.42) : R * 1.08;
+    const should = dist < gatherRadius;
+    if (should !== gatherMode) setGather(should);
+  }
+
+  function setGather(on){
+    gatherMode = on;
+    clearTimeout(gatherTimer);
+    wheelEl.classList.add('gather-transition');
+    if (on){
+      const rect = wheelEl.getBoundingClientRect();
+      const waterRect = water.getBoundingClientRect();
+      lastGatherX = cursorX - waterRect.left;
+      lastGatherY = cursorY - waterRect.top;
+      wasSubmerged = false;
+      wetDepth = 0;
+      wheelEl.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      setCardsToStack(cursorX - rect.left, cursorY - rect.top);
+      wheelEl.classList.add('gathered');
+      cards.forEach(c => {
+        c.classList.remove('hot');
+        c.style.setProperty('--a', 0.88);
+      });
+      gatherTimer = setTimeout(() => {
+        if (gatherMode){
+          wheelEl.classList.add('tracking');
+          wheelEl.classList.remove('gather-transition');
+        }
+      }, 560);
+    } else {
+      wasSubmerged = false;
+      wetDepth = 0;
+      wheelEl.classList.remove('tracking');
+      wheelEl.classList.remove('is-submerged');
+      wheelEl.classList.remove('gathered');
+      cards.forEach(card => card.style.setProperty('--reveal', 0));
+      wheelEl.style.transform = `rotateX(-14deg) rotateY(${spin}deg)`;
+      placeCardsInRing();
+      gatherTimer = setTimeout(() => {
+        wheelEl.classList.remove('gather-transition');
+      }, 580);
+    }
+  }
+
+  function updateAlphas(){
+    for (let i = 0; i < N; i++){
+      const a = ((i * STEP + spin) % 360 + 360) % 360;
+      const facing = Math.cos(a * Math.PI / 180);
+      const alpha = 0.12 + Math.max(0, facing) * 0.55;
+      cards[i].style.setProperty('--a', alpha.toFixed(3));
+    }
+  }
+
+  function wheelTick(){
+    const now = performance.now();
+    if (gatherMode){
+      // continuously update card targets to follow cursor
+      const rect = wheelEl.getBoundingClientRect();
+      setCardsToStack(cursorX - rect.left, cursorY - rect.top);
+    } else {
+      // ring mode — only apply per-frame updates when not in mid-transition
+      const transitioning = wheelEl.classList.contains('gather-transition');
+      if (!transitioning){
+        if (Math.abs(dragVel) > 0.001){
+          spin += dragVel;
+          dragVel *= DECAY;
+          if (Math.abs(dragVel) < IDLE_VEL * 0.5) dragVel = 0;
+        } else if (!dragging){
+          spin += IDLE_VEL;
+        }
+        wheelEl.style.transform = `rotateX(-14deg) rotateY(${spin}deg)`;
+        updateAlphas();
+      }
+    }
+    drawWater(now);
+    requestAnimationFrame(wheelTick);
+  }
+  wheelEl.style.transform = `rotateX(-14deg) rotateY(0deg)`;
+  resizeWater();
+  updateAlphas();
+  wheelTick();
+
+  /* drag-to-flick — works in all modes; spin accumulates even while gathered */
+  function getX(e){ return e.touches ? e.touches[0].clientX : e.clientX; }
+  function onDown(e){
+    dragging = true;
+    lastX = getX(e);
+    lastT = performance.now();
+    dragVel = 0;
+  }
+  function onMove(e){
+    if (!dragging) return;
+    const x = getX(e);
+    const now = performance.now();
+    const dx = x - lastX;
+    const dt = Math.max(1, now - lastT);
+    spin += dx * 0.35;
+    dragVel = (dx / dt) * 5;
+    lastX = x;
+    lastT = now;
+  }
+  function onUp(){
+    if (!dragging) return;
+    dragging = false;
+    if (gatherMode) checkGather();
+  }
+  stage.addEventListener('mousedown', onDown);
+  addEventListener('mousemove', onMove);
+  addEventListener('mouseup', onUp);
+  stage.addEventListener('touchstart', e => {
+    if (e.touches[0]){
+      cursorX = e.touches[0].clientX;
+      cursorY = e.touches[0].clientY;
+      mouseMoved = true;
+      checkGather();
+    }
+    onDown(e);
+  }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (e.touches[0]){
+      cursorX = e.touches[0].clientX;
+      cursorY = e.touches[0].clientY;
+      checkGather();
+    }
+    onMove(e);
+  }, { passive: true });
+  addEventListener('touchend', () => { onUp(); setGather(false); });
+
+  addEventListener('resize', () => {
+    clearTimeout(window.__rzt);
+    window.__rzt = setTimeout(() => {
+      R = computeR();
+      wheelEl.style.setProperty('--R', R + 'px');
+      if (!gatherMode) placeCardsInRing();
+      resizeWater();
+    }, 120);
+  });
+})();
+</script>
 </body>
 </html>

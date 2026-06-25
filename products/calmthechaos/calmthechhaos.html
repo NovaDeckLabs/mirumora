@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireball: Qi Gong - Chaos to Calm</title>
+    <style>
+        :root {
+            --bg-color: #0d2329;
+            --text-color: #ffffff;
+            --fire-color: linear-gradient(135deg, #ff4500, #ffaa00);
+            --calm-color: radial-gradient(circle, #00f2fe, #4facfe);
+            --body-color: #e0f7fa;
+            --floor-color: #11343c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            perspective: 1000px; /* Enables 3D space */
+        }
+
+        /* --- LAYOUT STRUCTURE --- */
+        #app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: 320px;
+            background: rgba(13, 35, 41, 0.85);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-area h1 {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .logo-area p {
+            font-size: 0.8rem;
+            color: #4facfe;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .routine-list {
+            list-style: none;
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 5px;
+        }
+
+        .routine-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .routine-item:hover, .routine-item.active {
+            background: rgba(79, 172, 254, 0.2);
+            border-left-color: #00f2fe;
+            transform: translateX(5px);
+        }
+
+        .routine-item h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .routine-item p {
+            font-size: 0.75rem;
+            color: #a0c0c5;
+        }
+
+        /* Control Box Bottom */
+        .controls {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: #4facfe;
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: #00f2fe; }
+
+        /* Display Panel for Mantras/Instructions */
+        #display-panel {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 400px;
+            background: rgba(13, 35, 41, 0.8);
+            backdrop-filter: blur(8px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #display-panel h2 { color: #00f2fe; font-size: 1.2rem; margin-bottom: 8px;}
+        #display-panel p { font-size: 0.95rem; line-height: 1.4; color: #e0f7fa; font-style: italic;}
+
+        /* --- 3D VIEWPORT CANVAS --- */
+        #viewport {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The 3D Stage Container */
+        .stage-3d {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            transform-style: preserve-3d;
+            transform: rotateX(-15deg) rotateY(-20deg);
+            transition: transform 0.1s linear; /* Smooth drag rotation */
+        }
+
+        /* Floor Grid */
+        .floor {
+            position: absolute;
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, var(--floor-color) 20%, #061317 80%);
+            top: 70%;
+            left: -200px;
+            transform: rotateX(90deg) translateZ(-200px);
+            border-radius: 50%;
+            opacity: 0.7;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* --- THE FIGURE & ANIMS (The Core Request) --- */
+        .energy-practitioner {
+            position: absolute;
+            width: 200px;
+            height: 400px;
+            left: 200px;
+            top: 100px;
+            transform-style: preserve-3d;
+            animation: breathe 5s ease-in-out infinite alternate;
+        }
+
+        /* Core Stylized Figure parts using CSS nesting to match logo style */
+        .torso {
+            position: absolute;
+            width: 50px;
+            height: 120px;
+            background: linear-gradient(to bottom, #ffffff, var(--body-color));
+            border-radius: 25px;
+            left: 75px;
+            top: 120px;
+            box-shadow: 0 0 30px rgba(240,255,255,0.4);
+            transform-style: preserve-3d;
+        }
+
+        .head {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            background: #ffffff;
+            border-radius: 50%;
+            left: 77px;
+            top: 65px;
+            box-shadow: 0 0 25px rgba(255,255,255,0.6);
+        }
+
+        /* Leading Arm holding the Calm Orb */
+        .lead-arm {
+            position: absolute;
+            width: 80px;
+            height: 24px;
+            background: var(--body-color);
+            border-radius: 12px;
+            left: 110px;
+            top: 140px;
+            transform-origin: left center;
+            animation: push-pull 6s ease-in-out infinite alternate;
+        }
+
+        /* Back-arching Fire Aura */
+        .fire-aura {
+            position: absolute;
+            width: 180px;
+            height: 220px;
+            background: var(--fire-color);
+            border-radius: 50% 50% 0 50%;
+            left: -20px;
+            top: 40px;
+            transform: rotate(-45deg) translateZ(-20px); /* Pushed slightly into 3D background */
+            filter: blur(8px);
+            opacity: 0.85;
+            animation: crackle 0.4s ease-in-out infinite alternate;
+        }
+
+        /* The Swirling Calm Orb */
+        .calm-orb {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: var(--calm-color);
+            border-radius: 50%;
+            right: -60px;
+            top: -33px;
+            box-shadow: 0 0 40px #00f2fe, inset 0 0 20px #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float-orb 3s ease-in-out infinite alternate;
+        }
+
+        .calm-orb::after {
+            content: '';
+            width: 70px;
+            height: 70px;
+            border: 4px dashed rgba(255,255,255,0.6);
+            border-radius: 50%;
+            animation: spin 4s linear infinite;
+        }
+
+        /* Lower Body Martial Arts Stance */
+        .legs-stance {
+            position: absolute;
+            width: 140px;
+            height: 100px;
+            border: 24px solid var(--body-color);
+            border-bottom: none;
+            border-radius: 50px 50px 0 0;
+            left: 30px;
+            top: 225px;
+            transform: rotateX(20deg);
+        }
+
+        /* Environment Ambient Particles */
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: rise 10s linear infinite;
+        }
+
+        /* --- ANIMATIONS (CSS Keyframes) --- */
+        @keyframes breathe {
+            0% { transform: translateY(0) scaleY(1); }
+            100% { transform: translateY(-8px) scaleY(1.02); }
+        }
+
+        @keyframes push-pull {
+            0% { transform: rotate(15deg) scaleX(0.9); }
+            50% { transform: rotate(-10deg) scaleX(1.1) translateX(10px); }
+            100% { transform: rotate(5deg) scaleX(1); }
+        }
+
+        @keyframes float-orb {
+            0% { transform: translateY(-5px) scale(0.95); filter: hue-rotate(0deg); }
+            100% { transform: translateY(10px) scale(1.05); filter: hue-rotate(30deg); }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes crackle {
+            0% { transform: rotate(-45deg) translateZ(-20px) scale(1); filter: blur(6px); }
+            100% { transform: rotate(-43deg) translateZ(-20px) scale(1.05); filter: blur(10px); opacity: 0.95; }
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(400px) translateX(0) translateZ(-100px); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-200px) translateX(50px) translateZ(100px); opacity: 0; }
+        }
+
+        /* Active modifications based on routine state changing via JS */
+        .state-meditation .fire-aura { opacity: 0.2; filter: blur(20px); }
+        .state-meditation .calm-orb { transform: scale(1.4) !important; }
+        .state-chaos .fire-aura { animation-duration: 0.1s; opacity: 1; filter: contrast(1.5); }
+        .state-parenting .energy-practitioner { animation-duration: 8s; } /* Slower, grounded movements */
+
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    
+    <div id="sidebar">
+        <div class="logo-area">
+            <h1>FIREBALL</h1>
+            <p>Qi Gong • Chaos to Calm</p>
+        </div>
+
+        <ul class="routine-list">
+            <li class="routine-item active" onclick="switchRoutine('qigong', this)">
+                <h3>Qi Gong Fundamentals</h3>
+                <p>Circulating the vital micro-cosmic orbit to align energy channels.</p>
+            </li>
+            <li class="routine-item" onclick="switchRoutine('calm', this)">
+                <h3>Chaos to Calm</h3>
+                <p>Disarm intense anxiety. Transform erratic fire into cool fluid focus.</p>
+            </li>
+            <li class="routine-item" onclick="switchRoutine('meditation', this)">
+                <h3>Zen Spheres</h3>
+                <p>Stillness practice using deep physical focus and silent mantras.</p>
+            </li>
+            <li class="routine-item" onclick="switchRoutine('control', this)">
+                <h3>Self-Control / Will</h3>
+                <p>Building core energetic resilience to combat impulsivity.</p>
+            </li>
+            <li class="routine-item" onclick="switchRoutine('parenting', this)">
+                <h3>Mindful Parenting</h3>
+                <p>Grounding exercises before reacting to external frantic dynamics.</p>
+            </li>
+        </ul>
+
+        <div class="controls">
+            <button class="btn" id="playPauseBtn" onclick="toggleAnimation()">Pause Flow</button>
+        </div>
+    </div>
+
+    <div id="viewport" onmousedown="startDrag(event)" onmousemove="drag(event)" onmouseup="endDrag()">
+        <div class="stage-3d" id="stage">
+            <div class="floor"></div>
+            
+            <div class="energy-practitioner" id="practitioner">
+                <div class="fire-aura"></div>
+                <div class="head"></div>
+                <div class="torso"></div>
+                <div class="lead-arm">
+                    <div class="calm-orb"></div>
+                </div>
+                <div class="legs-stance"></div>
+            </div>
+
+            <div class="particle" style="width:10px; height:10px; left:20%; animation-delay: 0s;"></div>
+            <div class="particle" style="width:15px; height:15px; left:40%; animation-delay: 2s;"></div>
+            <div class="particle" style="width:8px; height:8px; left:70%; animation-delay: 4s;"></div>
+            <div class="particle" style="width:12px; height:12px; left:85%; animation-delay: 1s;"></div>
+        </div>
+    </div>
+
+    <div id="display-panel">
+        <h2 id="panel-title">Qi Gong Fundamentals</h2>
+        <p id="panel-text">"Inhale clarity, expand your physical frame. Exhale chaos, draw energy back down to your lower Dantian reservoir."</p>
+    </div>
+</div>
+
+<script>
+    // Routine Data Dictionary containing routines across the spectrum requested
+    const routinesData = {
+        qigong: {
+            title: "Qi Gong Fundamentals",
+            text: '"Inhale clarity, expand your physical frame. Exhale chaos, draw energy back down into your lower Dantian reservoir."',
+            className: "state-qigong"
+        },
+        calm: {
+            title: "Chaos to Calm",
+            text: '"Visualize burning tension melting from your shoulders, rolling down your extended arms into the cool elemental sphere."',
+            className: "state-chaos"
+        },
+        meditation: {
+            title: "Zen Spheres",
+            text: '"Mantra: I am steady like the earth beneath me. I am empty and wide like space before me."',
+            className: "state-meditation"
+        },
+        control: {
+            title: "Self-Control Mastery",
+            text: '"The space between stimulus and reaction is your power. Feel your core axis remain perfectly upright and unbothered."',
+            className: "state-control"
+        },
+        parenting: {
+            title: "Mindful Parenting Calibration",
+            text: '"To calm a frantic room, first absorb the frantic pace and pass it through your rhythm. Be the anchor, not the echo."',
+            className: "state-parenting"
+        }
+    };
+
+    let isAnimated = true;
+    const practitioner = document.getElementById('practitioner');
+
+    // Switch between routines and update visual environment
+    function switchRoutine(type, element) {
+        // Update menu layout UI
+        document.querySelectorAll('.routine-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+
+        // Update Text Panel info
+        const data = routinesData[type];
+        document.getElementById('panel-title').innerText = data.title;
+        document.getElementById('panel-text').innerText = data.text;
+
+        // Reset and Apply specific state class modifier onto the 3D target
+        practitioner.className = "energy-practitioner";
+        practitioner.classList.add(data.className);
+    }
+
+    // Interactive Global Pause function
+    function toggleAnimation() {
+        const btn = document.getElementById('playPauseBtn');
+        if (isAnimated) {
+            document.querySelectorAll('*').forEach(el => {
+                if(el.style) el.style.animationPlayState = 'paused';
+            });
+            btn.innerText = "Resume Flow";
+            btn.style.background = "#ff4500";
+        } else {
+            document.querySelectorAll('*').forEach(el => {
+                if(el.style) el.style.animationPlayState = 'running';
+            });
+            btn.innerText = "Pause Flow";
+            btn.style.background = "#4facfe";
+        }
+        isAnimated = !isAnimated;
+    }
+
+    /* --- MOUSE 3D INTERACTIVITY (Drag Stage to view Angles) --- */
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let currentRotation = { x: -15, y: -20 };
+    const stage = document.getElementById('stage');
+
+    function startDrag(e) {
+        isDragging = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        
+        let deltaX = e.clientX - previousMousePosition.x;
+        let deltaY = e.clientY - previousMousePosition.y;
+
+        currentRotation.y += deltaX * 0.5;
+        currentRotation.x -= deltaY * 0.5;
+
+        // Clamp values so viewport inversion doesn't occur
+        currentRotation.x = Math.max(-45, Math.min(45, currentRotation.x));
+
+        stage.style.transform = `rotateX(${currentRotation.x}deg) rotateY(${currentRotation.y}deg)`;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+    }
+
+    function endDrag() {
+        isDragging = false;
+    }
+</script>
+</body>
+</html>
