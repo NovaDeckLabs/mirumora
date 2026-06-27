@@ -37,14 +37,9 @@
   --cursor-line: rgba(20,20,19,0.90);
   --cta-line: rgba(20,20,19,0.78);
   --cta-fill: rgba(20,20,19,0.07);
-  --card-lightness: 39%;
-  --card-hot-lightness: 28%;
-  --card-fill-a: rgba(255,255,255,0.54);
-  --card-fill-b: rgba(220,214,202,0.88);
-  --card-shadow: rgba(70,61,48,0.22);
-  --card-inset: rgba(255,255,255,0.62);
   --logo-filter: none;
-  --water-blend: multiply;
+  --water-line: rgba(34, 92, 104, 0.28);
+  --water-glow: rgba(55, 112, 122, 0.14);
 }
 
 :root[data-theme="dark"]{
@@ -60,14 +55,9 @@
   --cursor-line: rgba(243,239,232,0.95);
   --cta-line: rgba(243,239,232,0.90);
   --cta-fill: rgba(243,239,232,0.10);
-  --card-lightness: 78%;
-  --card-hot-lightness: 85%;
-  --card-fill-a: rgba(20,20,19,0.58);
-  --card-fill-b: rgba(20,20,19,0.90);
-  --card-shadow: rgba(0,0,0,0.90);
-  --card-inset: rgba(255,255,255,0.08);
   --logo-filter: invert(1) brightness(1.05);
-  --water-blend: screen;
+  --water-line: rgba(205, 229, 228, 0.25);
+  --water-glow: rgba(173, 211, 214, 0.13);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -405,176 +395,18 @@ body.has-custom-cursor *{ cursor: none !important; }
   pointer-events: auto;
 }
 
-/* ── Wheel ───────────────────────────────── */
+/* ── Quiet interactive water ─────────────── */
 .water-plane{
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -2vh;
+  bottom: 0;
   width: 100%;
-  height: 70vh;
+  height: 62vh;
   z-index: 3;
   pointer-events: none;
-  opacity: 0;
-  mix-blend-mode: var(--water-blend);
-  transition: opacity .8s ease;
-}
-body.cards-open .water-plane{ opacity: 0.94; }
-
-.wheel-stage{
-  position: absolute;
-  bottom: -22vh;
-  left: 50%;
-  transform: translateX(-50%) translateY(42vh) scale(0.42);
-  transform-origin: 50% 100%;
-  width: min(1200px, 140vw);
-  height: 90vh;
-  perspective: 1500px;
-  perspective-origin: 50% 38%;
-  z-index: 2;
-  opacity: 0;
-  pointer-events: none;
-  transition: transform .95s cubic-bezier(.2,.8,.2,1), opacity .7s ease;
-}
-body.cards-open .wheel-stage{
-  transform: translateX(-50%) translateY(0) scale(1);
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* footer circle — cards rise out of / sink back into it */
-.cards-toggle{
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 6;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1px solid var(--bone-dim);
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color .25s ease, box-shadow .35s ease;
-}
-.cards-toggle::after{
-  content: "";
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--bone-dim);
-  transition: width .35s cubic-bezier(.2,.8,.2,1), height .35s cubic-bezier(.2,.8,.2,1), background-color .25s ease, border-color .25s ease;
-}
-.cards-toggle:hover{ border-color: var(--bone); }
-.cards-toggle:hover::after{ background: var(--bone); }
-body.cards-open .cards-toggle{ border-color: var(--bone); box-shadow: 0 0 0 4px var(--cta-fill); }
-body.cards-open .cards-toggle::after{
-  width: 12px; height: 12px;
-  background: transparent;
-  border: 1px solid var(--bone);
-}
-.wheel{
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  width: 0; height: 0;
-  transform-style: preserve-3d;
-  transform: rotateX(-14deg) rotateY(var(--spin, 0deg));
-  /* no default transition — frame-by-frame --spin updates must apply instantly */
-}
-.wheel.gather-transition{
-  transition: transform 0.55s cubic-bezier(.25,.8,.25,1);
-}
-.wheel.gathered{
-  transform: rotateX(0deg) rotateY(0deg);
-}
-.wheel-card{
-  --hue: calc(15 + var(--i, 0) * 16);
-  position: absolute;
-  width: 50px;
-  height: 72px;
-  left: -25px;
-  top: -36px;
-  border: 1px solid hsla(var(--hue), 55%, var(--card-lightness), var(--a, 0.4));
-  border-radius: 4px;
-  transform-style: preserve-3d;
-  transform: rotateY(calc(var(--i) * (360deg / var(--n)))) translateZ(var(--R, 320px));
-  backface-visibility: visible;
-  transition: border-color .25s ease;
-  will-change: transform, border-color;
-}
-.wheel.gather-transition .wheel-card{
-  transition: transform 0.55s cubic-bezier(.25,.8,.25,1),
-              border-color .25s ease;
-}
-.wheel-card::after{
-  content:"";
-  position: absolute;
-  inset: 5px;
-  border: 1px solid hsla(var(--hue), 55%, var(--card-lightness), calc(var(--a, 0.4) * 0.25));
-  border-radius: 2px;
-  transition: border-color .25s ease;
-  pointer-events: none;
-}
-.wheel-card::before{
-  content: attr(data-secret);
-  position: absolute;
-  inset: 8px 5px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  font-family: "Hanken Grotesk", system-ui, sans-serif;
-  font-size: 6px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: hsla(var(--hue), 60%, var(--card-hot-lightness), 0.88);
-  opacity: var(--reveal, 0);
-  transition: opacity .24s ease;
-  text-shadow: 0 1px 5px var(--ink);
-  pointer-events: none;
-}
-.wheel-card.hot{
-  border-color: hsl(var(--hue), 70%, var(--card-hot-lightness)) !important;
-}
-.wheel-card.hot::after{
-  border-color: hsla(var(--hue), 60%, 80%, 0.45) !important;
-}
-
-/* gathered: each card translated to cursor + fanned + slight stack thickness */
-.wheel.gathered .wheel-card{
-  background:
-    linear-gradient(145deg,
-      hsla(var(--hue), 52%, 76%, 0.10),
-      var(--card-fill-a) 48%,
-      var(--card-fill-b));
-  box-shadow:
-    0 12px 24px -16px var(--card-shadow),
-    0 0 18px -10px hsla(var(--hue), 70%, 76%, 0.8),
-    inset 0 1px 0 var(--card-inset);
-}
-.wheel.gathered.is-submerged .wheel-card{
-  border-color: hsla(var(--hue), 64%, var(--card-hot-lightness), calc(var(--a, 0.4) * 0.92));
-  box-shadow:
-    0 14px 26px -17px var(--card-shadow),
-    0 0 20px -9px hsla(188, 55%, 68%, 0.34),
-    inset 0 -18px 28px -22px hsla(188, 55%, 72%, 0.42),
-    inset 0 1px 0 var(--card-inset);
-}
-.wheel:not(.gathered) .wheel-card{
-  background: linear-gradient(
-    to bottom,
-    transparent 58%,
-    hsla(192, 52%, 64%, 0.05) 72%,
-    hsla(195, 60%, 72%, 0.16) 86%,
-    hsla(198, 72%, 80%, 0.32) 100%
-  );
-}
-/* once gather animation has played, switch to snappy follow */
-.wheel.gathered.tracking .wheel-card{
-  transition: transform 0.16s cubic-bezier(.2,.8,.2,1);
+  opacity: 0.92;
+  filter: saturate(0.92);
 }
 
 /* bottom anchors */
@@ -598,15 +430,11 @@ body.cards-open .cards-toggle::after{
   .hero{ padding: 0 22px; margin-top: -12vh; }
   .menu-panel{ min-width: 170px; }
   .menu-panel a, .menu-panel .soon{ font-size: 20px; }
-  .wheel-stage{ width: 210vw; bottom: -18vh; }
-  .water-plane{ height: 62vh; opacity: 0.72; }
+  .water-plane{ height: 56vh; }
 }
 
 @media (prefers-reduced-motion: reduce){
   .cursor{ display: none; }
-  .water-plane{ opacity: 0.42; }
-  .wheel{ transform: rotateX(-14deg); }
-  .wheel-card{ transition: none; }
 }
 </style>
 </head>
@@ -632,10 +460,6 @@ body.cards-open .cards-toggle::after{
 
   <canvas class="water-plane" id="waterPlane" aria-hidden="true"></canvas>
 
-  <div class="wheel-stage" id="wheelStage" aria-hidden="true">
-    <div class="wheel" id="wheel"></div>
-  </div>
-
   <main class="hero">
     <div class="mark" data-lit role="img" aria-label="Mirumora Studio mark"></div>
     <h1 data-split data-lit>Mirumora</h1>
@@ -643,8 +467,6 @@ body.cards-open .cards-toggle::after{
   </main>
 
   <div class="anchor anchor-bl">Mirumora</div>
-
-  <button class="cards-toggle" id="cardsToggle" aria-label="Show or hide the cards" aria-pressed="false"></button>
 
   <button class="theme-toggle" id="themeToggle" data-cta aria-label="Toggle light or dark mode">
     <span class="dot" aria-hidden="true"></span><span class="tlabel">Light</span>
@@ -835,145 +657,33 @@ body.cards-open .cards-toggle::after{
     }
   });
 
-  /* ───── Wheel ───── */
-  const wheelEl = document.getElementById('wheel');
-  const stage = document.getElementById('wheelStage');
+  // Reflective water
   const water = document.getElementById('waterPlane');
-  const waterCtx = water.getContext('2d');
-  const N = 24;
-  const STEP = 360 / N;
-  const SECRETS = [
-    'form', 'type', 'space', 'light', 'tone', 'rhythm',
-    'detail', 'balance', 'restraint', 'texture', 'colour', 'contrast',
-    'scale', 'weight', 'grid', 'margin', 'line', 'motion',
-    'clarity', 'craft', 'edit', 'refine', 'compose', 'consider'
-  ];
-  let R = computeR();
-
-  function computeR(){
-    return Math.min(360, Math.max(220, innerWidth * 0.27));
-  }
-
-  const cards = [];
-  for (let i = 0; i < N; i++){
-    const c = document.createElement('div');
-    c.className = 'wheel-card';
-    c.style.setProperty('--i', i);    // needed for per-card hue
-    c.style.setProperty('--a', 0.4);
-    c.style.setProperty('--reveal', 0);
-    c.dataset.secret = SECRETS[i % SECRETS.length];
-    wheelEl.appendChild(c);
-    cards.push(c);
-  }
-  cards.forEach(c => {
-    c.addEventListener('mouseenter', () => c.classList.add('hot'));
-    c.addEventListener('mouseleave', () => c.classList.remove('hot'));
-  });
-
-  // Place cards in ring formation (called once + when R changes + on gather exit)
-  function placeCardsInRing(){
-    for (let i = 0; i < N; i++){
-      cards[i].style.transform = `rotateY(${i * STEP}deg) translateZ(${R}px)`;
-    }
-  }
-  function setCardsToStack(mx, my){
-    const mid = (N - 1) / 2;
-    for (let i = 0; i < N; i++){
-      const offset = i - mid;
-      const edge = Math.abs(offset) / mid;
-      const fan = offset * 2.8;
-      const sx = offset * 0.72;
-      const sy = -Math.pow(edge, 1.45) * 13 + Math.sin(i * 1.7) * 1.5;
-      const depth = (mid - Math.abs(offset)) * 0.9;
-      const tiltX = Math.sin(i * 0.9) * 2.2;
-      const tiltY = offset * -0.22;
-      cards[i].style.transform =
-        `translate3d(${mx + sx}px, ${my + sy}px, ${depth}px) rotateZ(${fan}deg) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-    }
-  }
-
-  placeCardsInRing();
-
-  let spin = 0;
-  let dragVel = 0;
-  let dragging = false;
-  let lastX = 0;
-  let lastT = 0;
-  const IDLE_VEL = 0.12;
-  const DECAY = 0.962;
+  const waterCtx = water.getContext('2d', { alpha: true });
+  const hero = document.querySelector('.hero');
+  const mark = document.querySelector('.hero .mark');
+  const title = document.querySelector('.hero h1');
+  const studio = document.querySelector('.hero .studio');
+  const logoImg = new Image();
+  logoImg.src = 'assets/Logo.svg';
 
   let waterWidth = 0;
   let waterHeight = 0;
   let waterDpr = 1;
-  const ripples = [];
-  const droplets = [];
-  let wasSubmerged = false;
-  let wetDepth = 0;
-  let lastGatherX = cursorX;
-  let lastGatherY = cursorY;
+  let surfaceY = 0;
+  let pointerX = innerWidth / 2;
+  let pointerY = innerHeight / 2;
+  let lastPointerX = pointerX;
+  let lastPointerY = pointerY;
   let lastWaterTime = performance.now();
-  let lastWakeTime = 0;
+  let pointerInsideWater = false;
+  const ripples = [];
+  const drops = [];
 
-  /* 1D wave field — height/velocity along X at the contact zone.
-     Cards inject impulses as they sweep across the front of the wheel.
-     Real wave equation: a' = (h[i-1]+h[i+1]-2h[i])*k, damped. */
-  const WAVE_RES = 192;
-  const waveHeights = new Float32Array(WAVE_RES);
-  const waveVels = new Float32Array(WAVE_RES);
-  const cardLastX = new Float32Array(N);
-  cardLastX.fill(-9999);
-
-  function injectWaveAt(xPx, force){
-    if (!waterWidth) return;
-    const idx = Math.round((xPx / waterWidth) * (WAVE_RES - 1));
-    if (idx < 1 || idx >= WAVE_RES - 1) return;
-    // Soft impulse spreads to neighbors so it doesn't look pixelated
-    waveVels[idx]     += force;
-    waveVels[idx - 1] += force * 0.55;
-    waveVels[idx + 1] += force * 0.55;
-  }
-
-  function stepWaveField(dt){
-    const k = 0.42;         // wave-speed constant
-    const damping = 0.984;  // bleed energy each step
-    for (let i = 1; i < WAVE_RES - 1; i++){
-      const accel = (waveHeights[i - 1] + waveHeights[i + 1] - 2 * waveHeights[i]) * k;
-      waveVels[i] = (waveVels[i] + accel * dt) * damping;
-    }
-    // Reflect/absorb at edges
-    waveVels[0] *= 0.7; waveVels[WAVE_RES - 1] *= 0.7;
-    for (let i = 0; i < WAVE_RES; i++){
-      waveHeights[i] += waveVels[i] * dt;
-    }
-  }
-
-  function sampleWave(xPx){
-    if (!waterWidth) return 0;
-    const idxF = (xPx / waterWidth) * (WAVE_RES - 1);
-    const i0 = Math.floor(idxF);
-    if (i0 < 0 || i0 >= WAVE_RES - 1) return 0;
-    const t = idxF - i0;
-    return waveHeights[i0] * (1 - t) + waveHeights[i0 + 1] * t;
-  }
-
-  function addRipple(x, y, strength = 1, radius = 8){
-    ripples.push({ x, y, strength, radius, life: 1 });
-    if (ripples.length > 42) ripples.shift();
-  }
-
-  function addDrips(x, y, amount){
-    const count = Math.min(10, Math.max(3, Math.round(amount * 8)));
-    for (let i = 0; i < count; i++){
-      droplets.push({
-        x: x + (Math.random() - 0.5) * 44,
-        y: y + Math.random() * 10,
-        vx: (Math.random() - 0.5) * 0.18,
-        vy: 0.18 + Math.random() * 0.24,
-        length: 2 + Math.random() * 4,
-        life: 1
-      });
-    }
-  }
+  const reflectionCanvas = document.createElement('canvas');
+  const reflectionCtx = reflectionCanvas.getContext('2d');
+  const sliceCanvas = document.createElement('canvas');
+  const sliceCtx = sliceCanvas.getContext('2d');
 
   function resizeWater(){
     const rect = water.getBoundingClientRect();
@@ -983,396 +693,274 @@ body.cards-open .cards-toggle::after{
     water.width = Math.round(waterWidth * waterDpr);
     water.height = Math.round(waterHeight * waterDpr);
     waterCtx.setTransform(waterDpr, 0, 0, waterDpr, 0, 0);
+    reflectionCanvas.width = Math.round(waterWidth * waterDpr);
+    reflectionCanvas.height = Math.round(waterHeight * waterDpr);
+    reflectionCtx.setTransform(waterDpr, 0, 0, waterDpr, 0, 0);
+    sliceCanvas.width = Math.round(waterWidth * waterDpr);
+    sliceCanvas.height = Math.round(waterHeight * waterDpr);
+    sliceCtx.setTransform(waterDpr, 0, 0, waterDpr, 0, 0);
+    surfaceY = Math.max(52, Math.min(waterHeight * 0.34, waterHeight - 260));
+  }
+
+  function brandIsLit(){
+    return document.querySelector('[data-lit].is-lit, [data-lit]:hover') !== null;
+  }
+
+  function colorForCssVar(name){
+    return getComputedStyle(root).getPropertyValue(name).trim();
+  }
+
+  function fillLogo(ctx, x, y, w, h, lit){
+    ctx.save();
+    ctx.translate(x, y);
+    if (logoImg.complete && logoImg.naturalWidth){
+      ctx.drawImage(logoImg, 0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-in';
+      if (lit){
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0.00, 'hsl(15, 75%, 62%)');
+        grad.addColorStop(0.18, 'hsl(48, 78%, 62%)');
+        grad.addColorStop(0.36, 'hsl(128, 52%, 58%)');
+        grad.addColorStop(0.55, 'hsl(192, 64%, 60%)');
+        grad.addColorStop(0.74, 'hsl(262, 54%, 66%)');
+        grad.addColorStop(1.00, 'hsl(322, 64%, 66%)');
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = colorForCssVar('--bone');
+      }
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.restore();
+  }
+
+  function drawReflectionSource(){
+    reflectionCtx.clearRect(0, 0, waterWidth, waterHeight);
+    const waterRect = water.getBoundingClientRect();
+    const heroRect = hero.getBoundingClientRect();
+    const markRect = mark.getBoundingClientRect();
+    const titleRect = title.getBoundingClientRect();
+    const studioRect = studio.getBoundingClientRect();
+    const lit = brandIsLit();
+    const heroBottom = heroRect.bottom - waterRect.top;
+    const mirrorY = Math.max(surfaceY + 12, heroBottom + 22);
+
+    reflectionCtx.save();
+    reflectionCtx.translate(0, mirrorY * 2);
+    reflectionCtx.scale(1, -1);
+    reflectionCtx.globalAlpha = isLight() ? 0.13 : 0.16;
+
+    fillLogo(
+      reflectionCtx,
+      markRect.left - waterRect.left,
+      markRect.top - waterRect.top,
+      markRect.width,
+      markRect.height,
+      lit
+    );
+
+    const titleStyle = getComputedStyle(title);
+    reflectionCtx.textAlign = 'center';
+    reflectionCtx.textBaseline = 'top';
+    reflectionCtx.font = titleStyle.fontWeight + ' ' + titleStyle.fontSize + ' ' + titleStyle.fontFamily;
+    if (lit){
+      const grad = reflectionCtx.createLinearGradient(0, titleRect.top - waterRect.top, 0, titleRect.bottom - waterRect.top);
+      grad.addColorStop(0.00, 'hsl(15, 75%, 62%)');
+      grad.addColorStop(0.22, 'hsl(48, 78%, 62%)');
+      grad.addColorStop(0.44, 'hsl(128, 52%, 58%)');
+      grad.addColorStop(0.66, 'hsl(192, 64%, 60%)');
+      grad.addColorStop(0.84, 'hsl(262, 54%, 66%)');
+      grad.addColorStop(1.00, 'hsl(322, 64%, 66%)');
+      reflectionCtx.fillStyle = grad;
+    } else {
+      reflectionCtx.fillStyle = colorForCssVar('--bone');
+    }
+    reflectionCtx.fillText('Mirumora', titleRect.left - waterRect.left + titleRect.width / 2, titleRect.top - waterRect.top);
+
+    const studioStyle = getComputedStyle(studio);
+    reflectionCtx.font = studioStyle.fontWeight + ' ' + studioStyle.fontSize + ' ' + studioStyle.fontFamily;
+    reflectionCtx.letterSpacing = studioStyle.letterSpacing;
+    reflectionCtx.fillStyle = lit ? reflectionCtx.fillStyle : colorForCssVar('--bone-dim');
+    reflectionCtx.globalAlpha = isLight() ? 0.10 : 0.13;
+    reflectionCtx.fillText('STUDIO', studioRect.left - waterRect.left + studioRect.width / 2, studioRect.top - waterRect.top);
+    reflectionCtx.restore();
+
+    reflectionCtx.save();
+    const fade = reflectionCtx.createLinearGradient(0, surfaceY, 0, waterHeight);
+    fade.addColorStop(0, 'rgba(0,0,0,0.72)');
+    fade.addColorStop(0.34, 'rgba(0,0,0,0.28)');
+    fade.addColorStop(1, 'rgba(0,0,0,0)');
+    reflectionCtx.globalCompositeOperation = 'destination-in';
+    reflectionCtx.fillStyle = fade;
+    reflectionCtx.fillRect(0, 0, waterWidth, waterHeight);
+    reflectionCtx.restore();
+  }
+
+  function addRipple(x, y, strength = 1){
+    const waterRect = water.getBoundingClientRect();
+    ripples.push({
+      x: x - waterRect.left,
+      y: y - waterRect.top,
+      radius: 2,
+      strength,
+      life: 1
+    });
+    if (ripples.length > 36) ripples.shift();
+  }
+
+  function disturbFromPointer(x, y, force){
+    const waterRect = water.getBoundingClientRect();
+    const localY = y - waterRect.top;
+    if (localY < surfaceY - 18 || localY > waterHeight + 12) return;
+    addRipple(x, y, force);
+    for (let i = 0; i < Math.min(5, Math.ceil(force * 2)); i++){
+      drops.push({
+        x: x - waterRect.left + (Math.random() - 0.5) * 16,
+        y: localY + (Math.random() - 0.5) * 6,
+        vx: (Math.random() - 0.5) * 0.06,
+        vy: -0.08 - Math.random() * 0.08,
+        life: 0.75
+      });
+    }
+    if (drops.length > 50) drops.splice(0, drops.length - 50);
+  }
+
+  function waveOffset(x, y, time){
+    let offset = 0;
+    for (const ripple of ripples){
+      const dx = x - ripple.x;
+      const dy = (y - ripple.y) * 2.8;
+      const dist = Math.hypot(dx, dy);
+      const crest = ripple.radius;
+      const falloff = Math.max(0, 1 - Math.abs(dist - crest) / 54);
+      offset += Math.sin((dist - crest) * 0.18) * falloff * ripple.life * ripple.strength * 7;
+    }
+    if (pointerInsideWater){
+      const waterRect = water.getBoundingClientRect();
+      const dx = x - (pointerX - waterRect.left);
+      const dy = (y - (pointerY - waterRect.top)) * 2.5;
+      const dist = Math.hypot(dx, dy);
+      const falloff = Math.max(0, 1 - dist / 92);
+      offset += Math.sin(dist * 0.22 - time * 0.012) * falloff * 1.6;
+    }
+    return offset;
+  }
+
+  function drawDistortedReflection(time){
+    sliceCtx.clearRect(0, 0, waterWidth, waterHeight);
+    const row = 3;
+    for (let y = 0; y < waterHeight; y += row){
+      const depth = Math.max(0, (y - surfaceY) / Math.max(1, waterHeight - surfaceY));
+      let energy = 0;
+      for (const ripple of ripples){
+        const dy = Math.abs(y - ripple.y);
+        energy += Math.max(0, 1 - dy / 180) * ripple.life * ripple.strength;
+      }
+      const idle = Math.sin(y * 0.045 + time * 0.0007) * 0.24 * depth;
+      const pointerWave = waveOffset(waterWidth * 0.5, y, time) * 0.14;
+      const shift = idle + pointerWave + Math.sin(y * 0.13 + time * 0.0011) * energy * 1.4;
+      sliceCtx.drawImage(reflectionCanvas, 0, y, waterWidth, row, shift, y, waterWidth, row);
+    }
+    waterCtx.drawImage(sliceCanvas, 0, 0, waterWidth, waterHeight);
   }
 
   function drawWater(time){
+    const dt = Math.min(34, time - lastWaterTime);
+    lastWaterTime = time;
     waterCtx.clearRect(0, 0, waterWidth, waterHeight);
     if (!waterWidth || !waterHeight) return;
 
+    drawReflectionSource();
+    drawDistortedReflection(time);
+
     const light = isLight();
-    const phase = time * 0.00045;
-    const speed = Math.min(1, Math.abs(dragVel) * 0.16 + IDLE_VEL * 2.4);
-    const dt = Math.min(32, time - lastWaterTime);
-    const waterRect = water.getBoundingClientRect();
-    const wheelRect = wheelEl.getBoundingClientRect();
-    const centerX = wheelRect.left - waterRect.left;
-    const axisY = wheelRect.top - waterRect.top;
-    const surfaceY = axisY + (innerWidth <= 600 ? 28 : 31);
-    const waterRgb = light ? '55, 112, 122' : '173, 211, 214';
-    const brightRgb = light ? '34, 92, 104' : '205, 229, 228';
-    const deepRgb = light ? '82, 132, 140' : '106, 164, 177';
+    const line = light ? '34, 92, 104' : '205, 229, 228';
+    const glow = light ? '55, 112, 122' : '173, 211, 214';
+    const surfacePulse = ripples.reduce((sum, ripple) => sum + ripple.life * ripple.strength, 0);
 
-    const projectedRadius = Math.min(waterWidth * 0.31, R * 1.15);
-    const direction = dragVel < -0.01 ? -1 : 1;
+    const surfaceGrad = waterCtx.createLinearGradient(0, surfaceY - 36, 0, waterHeight);
+    surfaceGrad.addColorStop(0, 'rgba(' + glow + ', ' + (0.018 + Math.min(0.05, surfacePulse * 0.01)) + ')');
+    surfaceGrad.addColorStop(0.22, 'rgba(' + glow + ', ' + (light ? 0.035 : 0.045) + ')');
+    surfaceGrad.addColorStop(1, 'rgba(' + glow + ', 0)');
+    waterCtx.fillStyle = surfaceGrad;
+    waterCtx.fillRect(0, Math.max(0, surfaceY - 44), waterWidth, waterHeight);
 
-    if (!gatherMode){
-      // ── Per-card physics: inject wave impulses from card motion through water ──
-      for (let i = 0; i < N; i++){
-        const angle = (i * STEP + spin) * Math.PI / 180;
-        const depth = Math.cos(angle);
-        const cardX = centerX + Math.sin(angle) * projectedRadius;
-
-        // Always-on barely-dipped reveal — front cards show their label more
-        const baseReveal = 0.07 + Math.max(0, depth) * 0.22;
-        cards[i].style.setProperty('--reveal', baseReveal.toFixed(3));
-
-        // Inject impulse where the card meets the water — front cards have more force
-        if (depth > -0.15){
-          const lastX = cardLastX[i];
-          const dx = lastX > -9000 ? cardX - lastX : 0;
-          const intensity = (Math.max(0, depth) + 0.18) * (Math.abs(dx) * 0.04 + IDLE_VEL * 0.6 + speed * 0.45);
-          if (intensity > 0.0008) injectWaveAt(cardX, -intensity * 0.55);
-        }
-        cardLastX[i] = cardX;
-      }
-
-      // Step the wave equation forward
-      const waveDt = Math.min(2, dt * 0.32);
-      stepWaveField(waveDt);
-
-      // ── Per-card render: curved wakes following the angular path ──
-      for (let i = 0; i < N; i++){
-        const angle = (i * STEP + spin) * Math.PI / 180;
-        const depth = Math.cos(angle);
-        if (depth < -0.45) continue;     // skip cards on the far back of the wheel
-
-        const visibility = 0.18 + Math.max(0, depth) * 0.82;
-        const cardX = centerX + Math.sin(angle) * projectedRadius;
-        const waveBob = sampleWave(cardX) * 4.5;
-        const contactY = surfaceY + depth * projectedRadius * 0.055 + waveBob;
-        const wakeAlpha = visibility * (light ? 0.16 : 0.22);
-        const contactRadius = 6 + visibility * 4.5;
-        if (!isFinite(cardX) || !isFinite(contactY) || contactRadius <= 0) continue;
-
-        // Contact ellipse — where card bottom meets the water (bobs with the wave)
-        const contactGlow = waterCtx.createRadialGradient(
-          cardX, contactY, 0, cardX, contactY, contactRadius * 2.4);
-        contactGlow.addColorStop(0, `rgba(${brightRgb}, ${wakeAlpha * 0.38})`);
-        contactGlow.addColorStop(1, `rgba(${deepRgb}, 0)`);
-        waterCtx.fillStyle = contactGlow;
-        waterCtx.beginPath();
-        waterCtx.ellipse(cardX, contactY + 1, contactRadius * 2.4, contactRadius * 0.7, 0, 0, Math.PI * 2);
-        waterCtx.fill();
-
-        // Crisp contact ring
-        waterCtx.beginPath();
-        waterCtx.ellipse(cardX, contactY, contactRadius, 1.1 + visibility, 0, 0, Math.PI * 2);
-        waterCtx.strokeStyle = `rgba(${brightRgb}, ${wakeAlpha})`;
-        waterCtx.lineWidth = 0.85;
-        waterCtx.stroke();
-
-        // CURVED wake — trace path through previous angular positions
-        // so the trail follows the rotation rather than going straight back.
-        const trailSteps = 6;
-        const trailSpan = 10 + speed * 14;  // degrees of wheel-rotation the trail covers
-        waterCtx.beginPath();
-        let started = false;
-        for (let t = 1; t <= trailSteps; t++){
-          const tNorm = t / trailSteps;
-          const trailDeg = direction * tNorm * trailSpan;
-          const trailAngle = (i * STEP + spin - trailDeg) * Math.PI / 180;
-          const trailDepth = Math.cos(trailAngle);
-          if (trailDepth < -0.35) continue;
-          const tx = centerX + Math.sin(trailAngle) * projectedRadius;
-          const tWave = sampleWave(tx) * 3.5;
-          const ty = surfaceY + trailDepth * projectedRadius * 0.055 + tWave
-                   + Math.sin(trailAngle + phase * 5) * (0.5 + tNorm * 0.7);
-          if (!started){
-            waterCtx.moveTo(tx, ty);
-            started = true;
-          } else {
-            waterCtx.lineTo(tx, ty);
-          }
-        }
-        if (started){
-          waterCtx.strokeStyle = `rgba(${waterRgb}, ${wakeAlpha * 0.95})`;
-          waterCtx.lineWidth = 0.85;
-          waterCtx.stroke();
-        }
-      }
-
-      // Quieter motor pulse — just one subtle ring, faster cards = more visible
-      const motorProgress = phase % 1;
-      const motorRadius = 24 + motorProgress * (52 + speed * 38);
-      waterCtx.beginPath();
-      waterCtx.ellipse(centerX, surfaceY, motorRadius, motorRadius * 0.16, 0, 0, Math.PI * 2);
-      waterCtx.strokeStyle = `rgba(${brightRgb}, ${(1 - motorProgress) * (0.015 + speed * 0.06)})`;
-      waterCtx.lineWidth = 0.65;
-      waterCtx.stroke();
-    } else {
-      const stackX = cursorX - waterRect.left;
-      const stackY = cursorY - waterRect.top;
-      const surfaceAtStack = surfaceY + (stackX - centerX) * 0.018;
-      const stackBottom = stackY + 37;
-      const nextWetDepth = Math.max(0, Math.min(1, (stackBottom - surfaceAtStack) / 62));
-      const velocityX = stackX - lastGatherX;
-      const velocityY = stackY - lastGatherY;
-      const movement = Math.hypot(velocityX, velocityY);
-      wetDepth += (nextWetDepth - wetDepth) * 0.22;
-
-      wheelEl.classList.toggle('is-submerged', wetDepth > 0.08);
-      cards.forEach((card, index) => {
-        const reveal = Math.max(0, Math.min(1, wetDepth * 1.65 - index * 0.018));
-        card.style.setProperty('--reveal', reveal.toFixed(3));
-      });
-
-      if (nextWetDepth > 0 && !wasSubmerged){
-        addRipple(stackX, surfaceAtStack, Math.min(1.8, 1.2 + movement * 0.03), 10);
-        injectWaveAt(stackX, -0.8 - movement * 0.04);    // plunge: big downward push
-      } else if (nextWetDepth === 0 && wasSubmerged){
-        addDrips(stackX, stackBottom - 8, wetDepth);
-        addRipple(stackX, surfaceAtStack, Math.min(1.2, 0.6 + movement * 0.02), 8);
-        injectWaveAt(stackX, 0.5 + wetDepth * 0.4);      // lift: upward bounce
-      }
-      if (nextWetDepth > 0 && movement > 2.4 && time - lastWakeTime > 55){
-        addRipple(stackX - velocityX * 0.8, surfaceAtStack, Math.min(1.4, movement * 0.06), 5);
-        injectWaveAt(stackX, -movement * 0.012);          // lateral drag: ongoing push
-        lastWakeTime = time;
-      }
-
-      // While submerged, continuously inject small impulses so water "holds" the stack
-      if (nextWetDepth > 0){
-        injectWaveAt(stackX, -wetDepth * 0.015 - movement * 0.004);
-      }
-      // Step the wave field in gather mode too so plunge/lift waves propagate
-      stepWaveField(Math.min(2, dt * 0.32));
-
-      if (wetDepth > 0.025){
-        const shimmer = waterCtx.createRadialGradient(stackX, surfaceAtStack + 8, 0, stackX, surfaceAtStack + 8, 76);
-        shimmer.addColorStop(0, `rgba(${brightRgb}, ${wetDepth * (light ? 0.085 : 0.13)})`);
-        shimmer.addColorStop(1, `rgba(${deepRgb}, 0)`);
-        waterCtx.fillStyle = shimmer;
-        waterCtx.beginPath();
-        waterCtx.ellipse(stackX, surfaceAtStack + 9, 78, 17, 0, 0, Math.PI * 2);
-        waterCtx.fill();
-
-        for (let ring = 0; ring < 3; ring++){
-          const progress = (phase * 1.8 + ring / 3) % 1;
-          const radius = 18 + progress * (38 + wetDepth * 24);
-          waterCtx.beginPath();
-          waterCtx.ellipse(stackX, surfaceAtStack, radius, radius * 0.19, 0, 0, Math.PI * 2);
-          waterCtx.strokeStyle = `rgba(${brightRgb}, ${(1 - progress) * wetDepth * (light ? 0.12 : 0.18)})`;
-          waterCtx.lineWidth = 0.75;
-          waterCtx.stroke();
-        }
-      }
-
-      wasSubmerged = nextWetDepth > 0;
-      lastGatherX = stackX;
-      lastGatherY = stackY;
+    waterCtx.save();
+    waterCtx.beginPath();
+    for (let x = 0; x <= waterWidth; x += 12){
+      const y = surfaceY + waveOffset(x, surfaceY, time) * 0.26;
+      if (x === 0) waterCtx.moveTo(x, y);
+      else waterCtx.lineTo(x, y);
     }
+    waterCtx.strokeStyle = 'rgba(' + line + ', ' + (0.055 + Math.min(0.16, surfacePulse * 0.018)) + ')';
+    waterCtx.lineWidth = 0.8;
+    waterCtx.stroke();
+    waterCtx.restore();
 
-    lastWaterTime = time;
     for (let i = ripples.length - 1; i >= 0; i--){
       const ripple = ripples[i];
-      ripple.radius += dt * (0.025 + ripple.strength * 0.018);
-      ripple.life -= dt * 0.00075;
+      ripple.radius += dt * (0.055 + ripple.strength * 0.016);
+      ripple.life -= dt * 0.00072;
+      const alpha = Math.max(0, ripple.life) * (light ? 0.13 : 0.18) * ripple.strength;
       waterCtx.beginPath();
-      waterCtx.ellipse(ripple.x, ripple.y, ripple.radius, ripple.radius * 0.18, 0, 0, Math.PI * 2);
-      waterCtx.strokeStyle = `rgba(${brightRgb}, ${Math.min(0.12, Math.max(0, ripple.life) * 0.065 * ripple.strength)})`;
-      waterCtx.lineWidth = 0.6 + ripple.strength * 0.22;
+      waterCtx.ellipse(ripple.x, ripple.y, ripple.radius, ripple.radius * 0.22, 0, 0, Math.PI * 2);
+      waterCtx.strokeStyle = 'rgba(' + line + ', ' + alpha + ')';
+      waterCtx.lineWidth = 0.7;
+      waterCtx.stroke();
+      waterCtx.beginPath();
+      waterCtx.ellipse(ripple.x, ripple.y, ripple.radius * 0.56, ripple.radius * 0.13, 0, 0, Math.PI * 2);
+      waterCtx.strokeStyle = 'rgba(' + line + ', ' + (alpha * 0.52) + ')';
       waterCtx.stroke();
       if (ripple.life <= 0) ripples.splice(i, 1);
     }
 
-    for (let i = droplets.length - 1; i >= 0; i--){
-      const drop = droplets[i];
+    for (let i = drops.length - 1; i >= 0; i--){
+      const drop = drops[i];
       drop.x += drop.vx * dt;
       drop.y += drop.vy * dt;
-      drop.vy += 0.0018 * dt;
-      drop.life -= dt * 0.0009;
-      const dropSurface = surfaceY + (drop.x - centerX) * 0.018;
-      if (drop.y >= dropSurface){
-        addRipple(drop.x, dropSurface, 0.32, 2);
-        droplets.splice(i, 1);
-        continue;
-      }
+      drop.vy += 0.0009 * dt;
+      drop.life -= dt * 0.0011;
       waterCtx.beginPath();
-      waterCtx.moveTo(drop.x, drop.y);
-      waterCtx.lineTo(drop.x - drop.vx * 6, drop.y - drop.length);
-      waterCtx.strokeStyle = `rgba(${brightRgb}, ${Math.max(0, drop.life) * (light ? 0.14 : 0.2)})`;
-      waterCtx.lineWidth = 0.7;
-      waterCtx.stroke();
-      if (drop.life <= 0) droplets.splice(i, 1);
+      waterCtx.arc(drop.x, drop.y, 0.8, 0, Math.PI * 2);
+      waterCtx.fillStyle = 'rgba(' + line + ', ' + (Math.max(0, drop.life) * 0.16) + ')';
+      waterCtx.fill();
+      if (drop.life <= 0) drops.splice(i, 1);
     }
+
+    requestAnimationFrame(drawWater);
   }
 
-  /* Gather mode */
-  let gatherMode = false;
-  let gatherTimer = null;
-
-  function checkGather(){
-    if (!cardsOpen) return;    // cards are tucked away — no interaction
-    if (!mouseMoved) return;   // allow even with reduced motion (user-initiated)
-    if (gatherMode && dragging) return;
-    const rect = wheelEl.getBoundingClientRect();
-    const dx = cursorX - rect.left;
-    const dy = cursorY - rect.top;
-    const dist = Math.hypot(dx, dy);
-    const gatherRadius = finePointer ? Math.min(132, R * 0.42) : R * 1.08;
-    const should = dist < gatherRadius;
-    if (should !== gatherMode) setGather(should);
-  }
-
-  function setGather(on){
-    gatherMode = on;
-    clearTimeout(gatherTimer);
-    wheelEl.classList.add('gather-transition');
-    if (on){
-      const rect = wheelEl.getBoundingClientRect();
-      const waterRect = water.getBoundingClientRect();
-      lastGatherX = cursorX - waterRect.left;
-      lastGatherY = cursorY - waterRect.top;
-      wasSubmerged = false;
-      wetDepth = 0;
-      wheelEl.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      setCardsToStack(cursorX - rect.left, cursorY - rect.top);
-      wheelEl.classList.add('gathered');
-      cards.forEach(c => {
-        c.classList.remove('hot');
-        c.style.setProperty('--a', 0.88);
-      });
-      gatherTimer = setTimeout(() => {
-        if (gatherMode){
-          wheelEl.classList.add('tracking');
-          wheelEl.classList.remove('gather-transition');
-        }
-      }, 560);
-    } else {
-      wasSubmerged = false;
-      wetDepth = 0;
-      wheelEl.classList.remove('tracking');
-      wheelEl.classList.remove('is-submerged');
-      wheelEl.classList.remove('gathered');
-      cards.forEach(card => card.style.setProperty('--reveal', 0));
-      wheelEl.style.transform = `rotateX(-14deg) rotateY(${spin}deg)`;
-      placeCardsInRing();
-      gatherTimer = setTimeout(() => {
-        wheelEl.classList.remove('gather-transition');
-      }, 580);
+  addEventListener('pointermove', e => {
+    pointerX = e.clientX;
+    pointerY = e.clientY;
+    const waterRect = water.getBoundingClientRect();
+    const localY = pointerY - waterRect.top;
+    const wasInside = pointerInsideWater;
+    pointerInsideWater = localY >= surfaceY - 16 && localY <= waterHeight;
+    const movement = Math.hypot(pointerX - lastPointerX, pointerY - lastPointerY);
+    if (pointerInsideWater && (e.buttons || movement > 8 || !wasInside)){
+      disturbFromPointer(pointerX, pointerY, Math.min(2.4, 0.45 + movement * 0.035 + (e.buttons ? 0.8 : 0)));
     }
-  }
+    lastPointerX = pointerX;
+    lastPointerY = pointerY;
+  }, { passive: true });
 
-  function updateAlphas(){
-    for (let i = 0; i < N; i++){
-      const a = ((i * STEP + spin) % 360 + 360) % 360;
-      const facing = Math.cos(a * Math.PI / 180);
-      const alpha = 0.12 + Math.max(0, facing) * 0.55;
-      cards[i].style.setProperty('--a', alpha.toFixed(3));
-    }
-  }
+  addEventListener('pointerdown', e => {
+    pointerX = e.clientX;
+    pointerY = e.clientY;
+    disturbFromPointer(pointerX, pointerY, 2.1);
+  }, { passive: true });
 
-  let cardsOpen = false;   // cards are an opt-in toggle, hidden by default
-  function wheelTick(){
-    const now = performance.now();
-    if (cardsOpen){
-      if (gatherMode){
-        // continuously update card targets to follow cursor
-        const rect = wheelEl.getBoundingClientRect();
-        setCardsToStack(cursorX - rect.left, cursorY - rect.top);
-      } else {
-        // ring mode — only apply per-frame updates when not in mid-transition
-        const transitioning = wheelEl.classList.contains('gather-transition');
-        if (!transitioning){
-          if (Math.abs(dragVel) > 0.001){
-            spin += dragVel;
-            dragVel *= DECAY;
-            if (Math.abs(dragVel) < IDLE_VEL * 0.5) dragVel = 0;
-          } else if (!dragging){
-            spin += IDLE_VEL;
-          }
-          wheelEl.style.transform = `rotateX(-14deg) rotateY(${spin}deg)`;
-          updateAlphas();
-        }
-      }
-      drawWater(now);
-    }
-    requestAnimationFrame(wheelTick);
-  }
-  wheelEl.style.transform = `rotateX(-14deg) rotateY(0deg)`;
+  addEventListener('pointerleave', () => {
+    pointerInsideWater = false;
+  });
+
+  logoImg.addEventListener('load', () => drawWater(performance.now()), { once: true });
   resizeWater();
-  updateAlphas();
-  wheelTick();
-
-  /* ───── Cards toggle — rise out of / sink back into the footer circle ───── */
-  let cardsHideTimer = null;
-  const cardsToggle = document.getElementById('cardsToggle');
-  function setCards(open){
-    document.body.classList.toggle('cards-open', open);
-    if (cardsToggle) cardsToggle.setAttribute('aria-pressed', open ? 'true' : 'false');
-    if (open){
-      clearTimeout(cardsHideTimer);
-      cardsOpen = true;
-    } else {
-      setGather(false);
-      clearTimeout(cardsHideTimer);
-      // keep drawing through the sink animation, then stop and clear
-      cardsHideTimer = setTimeout(() => {
-        cardsOpen = false;
-        waterCtx.clearRect(0, 0, waterWidth, waterHeight);
-      }, 1000);
-    }
-  }
-  if (cardsToggle){
-    cardsToggle.addEventListener('click', () => {
-      setCards(!document.body.classList.contains('cards-open'));
-    });
-  }
-
-  /* drag-to-flick — works in all modes; spin accumulates even while gathered */
-  function getX(e){ return e.touches ? e.touches[0].clientX : e.clientX; }
-  function onDown(e){
-    dragging = true;
-    lastX = getX(e);
-    lastT = performance.now();
-    dragVel = 0;
-  }
-  function onMove(e){
-    if (!dragging) return;
-    const x = getX(e);
-    const now = performance.now();
-    const dx = x - lastX;
-    const dt = Math.max(1, now - lastT);
-    spin += dx * 0.35;
-    dragVel = (dx / dt) * 5;
-    lastX = x;
-    lastT = now;
-  }
-  function onUp(){
-    if (!dragging) return;
-    dragging = false;
-    if (gatherMode) checkGather();
-  }
-  stage.addEventListener('mousedown', onDown);
-  addEventListener('mousemove', onMove);
-  addEventListener('mouseup', onUp);
-  stage.addEventListener('touchstart', e => {
-    if (e.touches[0]){
-      cursorX = e.touches[0].clientX;
-      cursorY = e.touches[0].clientY;
-      mouseMoved = true;
-      checkGather();
-    }
-    onDown(e);
-  }, { passive: true });
-  addEventListener('touchmove', e => {
-    if (e.touches[0]){
-      cursorX = e.touches[0].clientX;
-      cursorY = e.touches[0].clientY;
-      checkGather();
-    }
-    onMove(e);
-  }, { passive: true });
-  addEventListener('touchend', () => { onUp(); setGather(false); });
+  requestAnimationFrame(drawWater);
 
   addEventListener('resize', () => {
     clearTimeout(window.__rzt);
-    window.__rzt = setTimeout(() => {
-      R = computeR();
-      wheelEl.style.setProperty('--R', R + 'px');
-      if (!gatherMode) placeCardsInRing();
-      resizeWater();
-    }, 120);
+    window.__rzt = setTimeout(resizeWater, 120);
   });
 })();
 </script>
